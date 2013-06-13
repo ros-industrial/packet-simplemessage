@@ -885,7 +885,7 @@ do
 		offset_ = offset_ + 4
 
 		-- extract message type
-		local msg_type = pref_uint(buf, 4, 4)
+		local msg_type = pref_uint(buf, offset_, 4)
 
 		-- get dissection function based on msg type
 		local f = map_msg_type_to_disf[msg_type] or disf_default
