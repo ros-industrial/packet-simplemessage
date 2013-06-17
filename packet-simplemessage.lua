@@ -602,32 +602,32 @@ do
 		local zlen = (7 * 4)
 		local body_tree = lt:add(buf(offset_, zlen), "Body")
 
-		-- mode
-		pref_tree_add(body_tree, f.rs_mode, buf, offset_, 4)
+		-- drives powered
+		pref_tree_add(body_tree, f.rs_drv_pwd, buf, offset_, 4)
 		offset_ = offset_ + 4
 
 		-- e-stopped
 		pref_tree_add(body_tree, f.rs_estop, buf, offset_, 4)
 		offset_ = offset_ + 4
 
-		-- drives powered
-		pref_tree_add(body_tree, f.rs_drv_pwd, buf, offset_, 4)
-		offset_ = offset_ + 4
-
-		-- motion possible
-		pref_tree_add(body_tree, f.rs_motpos, buf, offset_, 4)
-		offset_ = offset_ + 4
-
-		-- in motion
-		pref_tree_add(body_tree, f.rs_inmot, buf, offset_, 4)
+		-- error code
+		pref_tree_add(body_tree, f.rs_errcode, buf, offset_, 4)
 		offset_ = offset_ + 4
 
 		-- in error
 		pref_tree_add(body_tree, f.rs_inerr, buf, offset_, 4)
 		offset_ = offset_ + 4
 
-		-- error code
-		pref_tree_add(body_tree, f.rs_errcode, buf, offset_, 4)
+		-- in motion
+		pref_tree_add(body_tree, f.rs_inmot, buf, offset_, 4)
+		offset_ = offset_ + 4
+
+		-- mode
+		pref_tree_add(body_tree, f.rs_mode, buf, offset_, 4)
+		offset_ = offset_ + 4
+
+		-- motion possible
+		pref_tree_add(body_tree, f.rs_motpos, buf, offset_, 4)
 		offset_ = offset_ + 4
 
 		-- nr of bytes we consumed
