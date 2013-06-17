@@ -171,10 +171,10 @@ do
 	local pkt_types_str = { 
 		[MSG_PING              ] = "Ping",
 		[MSG_JOINT_POSITION    ] = "Joint Position",
-		[MSG_JOINT_TRAJ_PT     ] = "Joint Traj Pt",
-		[MSG_JOINT_TRAJ        ] = "Joint Traj",
+		[MSG_JOINT_TRAJ_PT     ] = "Joint Trajectory Point",
+		[MSG_JOINT_TRAJ        ] = "Joint Trajectory",
 		[MSG_STATUS            ] = "Status",
-		[MSG_JOINT_TRAJ_PT_FULL] = "Joint Traj Pt Full",
+		[MSG_JOINT_TRAJ_PT_FULL] = "Joint Trajectory Point Full",
 		[MSG_JOINT_FEEDBACK    ] = "Joint Feedback",
 		[MSG_READ_INPUT        ] = "Read Input",
 		[MSG_WRITE_OUTPUT      ] = "Write Output",
