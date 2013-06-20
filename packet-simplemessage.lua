@@ -961,7 +961,14 @@ do
 
 			-- add info to top pkt view
 			pkt.cols.protocol = p_simplemsg_tcp.name
-			pkt.cols.info = _F("%s (0x%02x)", pkt_t_str, pkt_type)
+
+			-- use offset in buffer to determine if we need to append to or set
+			-- the info column
+			if (offset > 0) then
+				pkt.cols.info:append(_F(", %s (0x%02x)", pkt_t_str, pkt_type))
+			else
+				pkt.cols.info = _F("%s (0x%02x)", pkt_t_str, pkt_type)
+			end
 
 			-- dissect rest of pkt
 			local res = parse(buf, pkt, subtree, offset)
