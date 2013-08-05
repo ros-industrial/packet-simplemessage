@@ -1,4 +1,6 @@
 # packet-simplemessage
+v0.1.1
+
 
 ## Overview
 
@@ -18,8 +20,13 @@ Packet types dissected:
  * Motoman Motion Control
  * Motoman Motion Reply
 
-Tested on Wireshark 1.9.0-SVN-46273 on Windows, but should work on other 
-version and OS as well.
+Tested on (but should work on other versions and OS as well):
+
+ * Windows
+   * Wireshark 1.9.0-SVN-46273 
+   * Wireshark 1.11.0-SVN-50116
+ * Linux
+   * Wireshark 1.11.0+svn50816
 
 
 ## Installation

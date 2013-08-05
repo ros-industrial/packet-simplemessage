@@ -39,6 +39,8 @@ do
 	-- 
 	-- constants
 	-- 
+	local DISSECTOR_VERSION             = 0.1.1
+
 	local MIN_PKT_LEN                   = 44
 
 	local MSG_PING                      = 0x01
