@@ -32,14 +32,14 @@
   Author: G.A. vd. Hoorn, TU Delft Robotics Institute
   
   [1] http://ros.org/wiki/simple_message
-  [2] https://github.com/gavanderhoorn/packet-simplemessage/issues
+  [2] https://github.com/ros-industrial/packet-simplemessage/issues
 ]]
 do
 
 	-- 
 	-- constants
 	-- 
-	local DISSECTOR_VERSION             = "0.1.2"
+	local DISSECTOR_VERSION             = "0.1.3"
 
 	local MIN_PKT_LEN                   = 44
 
@@ -187,14 +187,14 @@ do
 	}
 
 	local comm_types_str = {
-		[COMM_INVALID        ] = "Invalid",
+		[COMM_INVALID        ] = "Unused / Invalid",
 		[COMM_TOPIC          ] = "Topic",
 		[COMM_SERVICE_REQUEST] = "Service Request",
 		[COMM_SERVICE_REPL   ] = "Service Reply"
 	}
 
 	local reply_code_str = {
-		[REPLY_INVALID] = "Invalid",
+		[REPLY_INVALID] = "Unused / Invalid",
 		[REPLY_SUCCESS] = "Success",
 		[REPLY_FAILURE] = "Failure"
 	}
