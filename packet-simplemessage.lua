@@ -663,8 +663,7 @@ do
 		return (offset_ - offset)
 	end
 
-    
-    -- 
+	-- 
 	-- JOINT_TRAJ_PT_FULL_EX
 	-- 
 	local function disf_joint_traj_point_full_ex(buf, pkt, tree, offset)
@@ -679,50 +678,50 @@ do
 		local zlen = 4 + 4 + 4*((3 * 4) + (3 * 40))
 		local body_tree = lt:add(buf(offset_, zlen), "Body")
 		
-        -- number of valid groups
-		    pref_tree_add(body_tree, f.jtptfex_validgroups, buf, offset_, 4)
-		    offset_ = offset_ + 4
-		    
+		-- number of valid groups
+		pref_tree_add(body_tree, f.jtptfex_validgroups, buf, offset_, 4)
+		offset_ = offset_ + 4
+		
 		-- sequence number
 		pref_tree_add(body_tree, f.jtptfex_seq_nr, buf, offset_, 4)
 		offset_ = offset_ + 4
-        
-        i=1
-        repeat
-        
-            -- robot id
-		    pref_tree_add(body_tree, f.jtptfex_robotid, buf, offset_, 4)
-		    offset_ = offset_ + 4
+
+		i=1
+		repeat
 		
-		    -- valid_fields
-		    local valid_fields = pref_uint(buf, offset_, 4)
-		    local vf_lo = pref_tree_add(body_tree, f.jtptfex_vf, buf, offset_, 4)
-		    -- bitfield
-		    pref_tree_add(vf_lo, f.jtptfex_vf_time,  buf, offset_, 4)
-		    pref_tree_add(vf_lo, f.jtptfex_vf_pos,   buf, offset_, 4)
-		    pref_tree_add(vf_lo, f.jtptfex_vf_vel,   buf, offset_, 4)
-		    pref_tree_add(vf_lo, f.jtptfex_vf_accel, buf, offset_, 4)
-		    offset_ = offset_ + 4
+			-- robot id
+			pref_tree_add(body_tree, f.jtptfex_robotid, buf, offset_, 4)
+			offset_ = offset_ + 4
 
-		    -- time
-		    pref_tree_add(body_tree, f.jtptfex_time, buf, offset_, 4)
-		    offset_ = offset_ + 4
+			-- valid_fields
+			local valid_fields = pref_uint(buf, offset_, 4)
+			local vf_lo = pref_tree_add(body_tree, f.jtptfex_vf, buf, offset_, 4)
+			-- bitfield
+			pref_tree_add(vf_lo, f.jtptfex_vf_time,  buf, offset_, 4)
+			pref_tree_add(vf_lo, f.jtptfex_vf_pos,   buf, offset_, 4)
+			pref_tree_add(vf_lo, f.jtptfex_vf_vel,   buf, offset_, 4)
+			pref_tree_add(vf_lo, f.jtptfex_vf_accel, buf, offset_, 4)
+			offset_ = offset_ + 4
 
-		    -- positions
-		    offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
-			    "Positions", "J%d")
+			-- time
+			pref_tree_add(body_tree, f.jtptfex_time, buf, offset_, 4)
+			offset_ = offset_ + 4
 
-		    -- velocities
-		    offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
-			    "Velocities", "J%d")
+			-- positions
+			offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+				"Positions", "J%d")
 
-		    -- accelerations
-		    offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
-			    "Accelerations", "J%d")
-			
+			-- velocities
+			offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+				"Velocities", "J%d")
+
+			-- accelerations
+			offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+				"Accelerations", "J%d")
+
 			i=i+1
 			
-        until i > 4
+		until i > 4
 		-- nr of bytes we consumed
 		return (offset_ - offset)
 	end
@@ -781,7 +780,7 @@ do
 		return (offset_ - offset)
 	end
 
-    -- 
+	-- 
 	-- JOINT_FEEDBACK_EX
 	-- 
 	local function disf_joint_feedback_ex(buf, pkt, tree, offset)
@@ -799,40 +798,40 @@ do
 		-- number of groups
 		pref_tree_add(body_tree, f.jfex_numgroups, buf, offset_, 4)
 		offset_ = offset_ + 4
-        
-        i=1
-        repeat
-            -- group ID
-            pref_tree_add(body_tree, f.jfex_robotid, buf, offset_, 4)
-		    offset_ = offset_ + 4
-		    -- valid_fields
-		    local valid_fields = pref_uint(buf, offset_, 4)
-		    local vf_lo = pref_tree_add(body_tree, f.jfex_vf, buf, offset_, 4)
-		    -- bitfield
-		    pref_tree_add(vf_lo, f.jfex_vf_time,  buf, offset_, 4)
-		    pref_tree_add(vf_lo, f.jfex_vf_pos,   buf, offset_, 4)
-		    pref_tree_add(vf_lo, f.jfex_vf_vel,   buf, offset_, 4)
-		    pref_tree_add(vf_lo, f.jfex_vf_accel, buf, offset_, 4)
-		    offset_ = offset_ + 4
 
-		    -- time
-		    pref_tree_add(body_tree, f.jfex_time, buf, offset_, 4)
-		    offset_ = offset_ + 4
+		i=1
+		repeat
+			-- group ID
+			pref_tree_add(body_tree, f.jfex_robotid, buf, offset_, 4)
+			offset_ = offset_ + 4
+			-- valid_fields
+			local valid_fields = pref_uint(buf, offset_, 4)
+			local vf_lo = pref_tree_add(body_tree, f.jfex_vf, buf, offset_, 4)
+			-- bitfield
+			pref_tree_add(vf_lo, f.jfex_vf_time,  buf, offset_, 4)
+			pref_tree_add(vf_lo, f.jfex_vf_pos,   buf, offset_, 4)
+			pref_tree_add(vf_lo, f.jfex_vf_vel,   buf, offset_, 4)
+			pref_tree_add(vf_lo, f.jfex_vf_accel, buf, offset_, 4)
+			offset_ = offset_ + 4
 
-		    -- positions
-		    offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
-			    "Positions", "J%d")
+			-- time
+			pref_tree_add(body_tree, f.jfex_time, buf, offset_, 4)
+			offset_ = offset_ + 4
 
-		    -- velocities
-		    offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
-			    "Velocities", "J%d")
+			-- positions
+			offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+				"Positions", "J%d")
 
-		    -- accelerations
-		    offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
-			    "Accelerations", "J%d")
-		    i = i + 1	
-        until i > 4
-        
+			-- velocities
+			offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+				"Velocities", "J%d")
+
+			-- accelerations
+			offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+				"Accelerations", "J%d")
+			i = i + 1	
+		until i > 4
+
 		-- nr of bytes we consumed
 		return (offset_ - offset)
 	end
