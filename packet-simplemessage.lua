@@ -736,6 +736,7 @@ do
 		local body_tree = lt:add(buf(offset_, zlen), "Body")
 
 		-- number of valid groups
+		local valid_groups = pref_uint(buf, offset_, 4)
 		pref_tree_add(body_tree, f.jtptfex_validgroups, buf, offset_, 4)
 		offset_ = offset_ + 4
 
@@ -782,7 +783,7 @@ do
 
 			i = i + 1
 
-		until (i > 3)
+		until (i == valid_groups)
 
 		-- nr of bytes we consumed
 		return (offset_ - offset)
@@ -858,6 +859,7 @@ do
 
 		-- number of groups
 		pref_tree_add(body_tree, f.jfex_numgroups, buf, offset_, 4)
+		local num_groups = pref_uint(buf, offset_, 4)
 		offset_ = offset_ + 4
 
 		local i = 0
@@ -899,7 +901,7 @@ do
 
 			i = i + 1
 
-		until (i > 3)
+		until (i == num_groups)
 
 		-- nr of bytes we consumed
 		return (offset_ - offset)
