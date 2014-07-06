@@ -1,5 +1,5 @@
 # packet-simplemessage
-v0.1.3
+v0.1.4
 
 
 ## Overview
@@ -14,9 +14,11 @@ Packet types dissected:
  * Ping
  * Joint Position
  * Joint Trajectory Point
- * Joint Trajectory Point Full
  * Status
+ * Joint Trajectory Point Full
  * Joint Feedback
+ * Joint Trajectory Point Full Extended
+ * Joint Feedback Extended
  * Motoman Motion Control
  * Motoman Motion Reply
 
