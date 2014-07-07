@@ -469,8 +469,7 @@ do
 		local lt = tree
 
 		-- 
-		local hlen = 3 * 4
-		local hdr_tree = lt:add(buf(offset_, hlen), "Header")
+		local hdr_tree = lt:add(buf(offset_, 0), "Header")
 
 		-- message type
 		pref_tree_add(hdr_tree, f.hdr_msg_type, buf, offset_, 4)
@@ -485,13 +484,15 @@ do
 		offset_ = offset_ + 4
 
 		-- nr of bytes we consumed
-		return (offset_ - offset)
+		local tlen = offset_ - offset
+		hdr_tree:set_len(tlen)
+		return (tlen)
 	end
 
 
 
 	-- 
-	-- array of 10 floats
+	-- array of N floats
 	-- 
 	local function disf_float_array(buf, pkt, tree, offset, array_sz, text, item_fmt)
 		-- 
@@ -499,8 +500,7 @@ do
 		local lt = tree
 
 		-- 
-		local zlen = 40
-		local jd_tree = lt:add(buf(offset_, zlen), text)
+		local jd_tree = lt:add(buf(offset_, 0), text)
 
 		for i = 0, (array_sz - 1) do
 			add_floatf(buf, jd_tree, offset_, 4, _F(item_fmt, i))
@@ -508,7 +508,9 @@ do
 		end
 
 		-- nr of bytes we consumed
-		return (offset_ - offset)
+		local tlen = offset_ - offset
+		jd_tree:set_len(tlen)
+		return (tlen)
 	end
 
 
@@ -547,8 +549,7 @@ do
 		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
 
 		-- body
-		local zlen = 44
-		local body_tree = lt:add(buf(offset_, zlen), "Body")
+		local body_tree = lt:add(buf(offset_, 0), "Body")
 
 		-- sequence number
 		local seq_nr = pref_int(buf, offset_, 4)
@@ -566,7 +567,9 @@ do
 			"Joint Data", "J%d")
 
 		-- nr of bytes we consumed
-		return (offset_ - offset)
+		local tlen = offset_ - offset
+		body_tree:set_len(tlen)
+		return (tlen)
 	end
 
 
@@ -583,8 +586,7 @@ do
 		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
 
 		-- body
-		local zlen = 48
-		local body_tree = lt:add(buf(offset_, zlen), "Body")
+		local body_tree = lt:add(buf(offset_, 0), "Body")
 
 		-- sequence number
 		local seq_nr = pref_int(buf, offset_, 4)
@@ -611,7 +613,9 @@ do
 		offset_ = offset_ + 4
 
 		-- nr of bytes we consumed
-		return (offset_ - offset)
+		local tlen = offset_ - offset
+		body_tree:set_len(tlen)
+		return (tlen)
 	end
 
 
@@ -628,8 +632,7 @@ do
 		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
 
 		-- body
-		local zlen = (7 * 4)
-		local body_tree = lt:add(buf(offset_, zlen), "Body")
+		local body_tree = lt:add(buf(offset_, 0), "Body")
 
 		-- drives powered
 		pref_tree_add(body_tree, f.rs_drv_pwd, buf, offset_, 4)
@@ -660,7 +663,9 @@ do
 		offset_ = offset_ + 4
 
 		-- nr of bytes we consumed
-		return (offset_ - offset)
+		local tlen = offset_ - offset
+		body_tree:set_len(tlen)
+		return (tlen)
 	end
 
 
@@ -677,8 +682,7 @@ do
 		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
 
 		-- body
-		local zlen = (4 * 4) + (3 * 40)
-		local body_tree = lt:add(buf(offset_, zlen), "Body")
+		local body_tree = lt:add(buf(offset_, 0), "Body")
 
 		-- robot id
 		pref_tree_add(body_tree, f.jtptf_robotid, buf, offset_, 4)
@@ -715,7 +719,9 @@ do
 			"Accelerations", "J%d")
 
 		-- nr of bytes we consumed
-		return (offset_ - offset)
+		local tlen = offset_ - offset
+		body_tree:set_len(tlen)
+		return (tlen)
 	end
 
 
@@ -732,8 +738,7 @@ do
 		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
 
 		-- body
-		local zlen = 4 + 4 + 4 * ((3 * 4) + (3 * 40))
-		local body_tree = lt:add(buf(offset_, zlen), "Body")
+		local body_tree = lt:add(buf(offset_, 0), "Body")
 
 		-- number of valid groups
 		local valid_groups = pref_uint(buf, offset_, 4)
@@ -747,8 +752,8 @@ do
 		local i = 0
 		repeat
 			-- 
-			local group_tree_len = 4 + 4 + 4 + (3 * (10 * 4))
-			local group_tree = body_tree:add(buf(offset_, group_tree_len), _F("Group %d", i))
+			local group_tree_start = offset_
+			local group_tree = body_tree:add(buf(offset_, 0), _F("Group %d", i))
 
 			-- robot id
 			pref_tree_add(group_tree, f.jtptfex_robotid, buf, offset_, 4)
@@ -781,12 +786,17 @@ do
 			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10, 
 				"Accelerations", "J%d")
 
+			-- correct length of TreeItem
+			group_tree:set_len(offset_ - group_tree_start)
+
 			i = i + 1
 
 		until (i == valid_groups)
 
 		-- nr of bytes we consumed
-		return (offset_ - offset)
+		local tlen = offset_ - offset
+		body_tree:set_len(tlen)
+		return (tlen)
 	end
 
 
@@ -803,8 +813,7 @@ do
 		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
 
 		-- body
-		local zlen = (3 * 4) + (3 * 40)
-		local body_tree = lt:add(buf(offset_, zlen), "Body")
+		local body_tree = lt:add(buf(offset_, 0), "Body")
 
 		-- robot id
 		pref_tree_add(body_tree, f.jf_robotid, buf, offset_, 4)
@@ -837,7 +846,9 @@ do
 			"Accelerations", "J%d")
 
 		-- nr of bytes we consumed
-		return (offset_ - offset)
+		local tlen = offset_ - offset
+		body_tree:set_len(tlen)
+		return (tlen)
 	end
 
 
@@ -854,8 +865,7 @@ do
 		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
 
 		-- body
-		local zlen = 4 + 4 * ((3 * 4) + (3 * 40))
-		local body_tree = lt:add(buf(offset_, zlen), "Body")
+		local body_tree = lt:add(buf(offset_, 0), "Body")
 
 		-- number of groups
 		pref_tree_add(body_tree, f.jfex_numgroups, buf, offset_, 4)
@@ -865,8 +875,8 @@ do
 		local i = 0
 		repeat
 			-- 
-			local group_tree_len = 4 + 4 + 4 + (3 * (10 * 4))
-			local group_tree = body_tree:add(buf(offset_, group_tree_len), _F("Group %d", i))
+			local group_tree_start = offset_
+			local group_tree = body_tree:add(buf(offset_, 0), _F("Group %d", i))
 
 			-- group ID
 			pref_tree_add(group_tree, f.jfex_robotid, buf, offset_, 4)
@@ -899,12 +909,17 @@ do
 			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10, 
 				"Accelerations", "J%d")
 
+			-- correct length of TreeItem
+			group_tree:set_len(offset_ - group_tree_start)
+
 			i = i + 1
 
 		until (i == num_groups)
 
 		-- nr of bytes we consumed
-		return (offset_ - offset)
+		local tlen = offset_ - offset
+		body_tree:set_len(tlen)
+		return (tlen)
 	end
 
 
@@ -921,8 +936,7 @@ do
 		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
 
 		-- body
-		local zlen = (3 * 4) + (10 * 4)
-		local body_tree = lt:add(buf(offset_, zlen), "Body")
+		local body_tree = lt:add(buf(offset_, 0), "Body")
 
 		-- robot id
 		pref_tree_add(body_tree, f.mmc_robotid, buf, offset_, 4)
@@ -941,7 +955,9 @@ do
 			"Data (reserved)", "J%d")
 
 		-- nr of bytes we consumed
-		return (offset_ - offset)
+		local tlen = offset_ - offset
+		body_tree:set_len(tlen)
+		return (tlen)
 	end
 
 
@@ -958,8 +974,7 @@ do
 		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
 
 		-- body
-		local zlen = (5 * 4) + (10 * 4)
-		local body_tree = lt:add(buf(offset_, zlen), "Body")
+		local body_tree = lt:add(buf(offset_, 0), "Body")
 
 		-- robot id
 		pref_tree_add(body_tree, f.mmr_robotid, buf, offset_, 4)
@@ -986,7 +1001,9 @@ do
 			"Data (reserved)", "J%d")
 
 		-- nr of bytes we consumed
-		return (offset_ - offset)
+		local tlen = offset_ - offset
+		body_tree:set_len(tlen)
+		return (tlen)
 	end
 
 
