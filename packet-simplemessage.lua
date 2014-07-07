@@ -450,6 +450,14 @@ do
 		return arr[arg] or "Unknown"
 	end
 
+	local function stringify_flagbits(bit_val, bit_tab)
+		local temp = {}
+		for k, v in pairs(bit_tab) do
+			if (bit.band(bit_val, k) > 0) then table.insert(temp, v) end
+		end
+		return table.concat(temp, ", ")
+	end
+
 
 
 
@@ -702,6 +710,9 @@ do
 		pref_tree_add(vf_lo, f.jtptf_vf_accel, buf, offset_, 4)
 		offset_ = offset_ + 4
 
+		-- append high bit flags to bitfield parent item
+		vf_lo:append_text(_F(" (%s)", stringify_flagbits(valid_fields, valid_field_type_str)))
+
 		-- time
 		pref_tree_add(body_tree, f.jtptf_time, buf, offset_, 4)
 		offset_ = offset_ + 4
@@ -770,6 +781,9 @@ do
 			pref_tree_add(vf_lo, f.jtptfex_vf_accel, buf, offset_, 4)
 			offset_ = offset_ + 4
 
+			-- append high bit flags to bitfield parent item
+			vf_lo:append_text(_F(" (%s)", stringify_flagbits(valid_fields, valid_field_type_str)))
+
 			-- time
 			pref_tree_add(group_tree, f.jtptfex_time, buf, offset_, 4)
 			offset_ = offset_ + 4
@@ -828,6 +842,9 @@ do
 		pref_tree_add(vf_lo, f.jf_vf_vel,   buf, offset_, 4)
 		pref_tree_add(vf_lo, f.jf_vf_accel, buf, offset_, 4)
 		offset_ = offset_ + 4
+
+		-- append high bit flags to bitfield parent item
+		vf_lo:append_text(_F(" (%s)", stringify_flagbits(valid_fields, valid_field_type_str)))
 
 		-- time
 		pref_tree_add(body_tree, f.jf_time, buf, offset_, 4)
@@ -892,6 +909,9 @@ do
 			pref_tree_add(vf_lo, f.jfex_vf_vel,   buf, offset_, 4)
 			pref_tree_add(vf_lo, f.jfex_vf_accel, buf, offset_, 4)
 			offset_ = offset_ + 4
+
+			-- append high bit flags to bitfield parent item
+			vf_lo:append_text(_F(" (%s)", stringify_flagbits(valid_fields, valid_field_type_str)))
 
 			-- time
 			pref_tree_add(group_tree, f.jfex_time, buf, offset_, 4)
