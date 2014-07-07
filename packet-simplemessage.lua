@@ -151,7 +151,8 @@ do
 	-- minimal config
 	local config = {
 		target_be = true,
-		autodetect_endianness = true
+		autodetect_endianness = true,
+		display_invalid_fields = true
 	}
 
 
@@ -292,8 +293,9 @@ do
 	local p_simplemsg_tcp = Proto("SIMPLEMESSAGE", "ROS Industrial SimpleMessage")
 
 	-- preferences
-	p_simplemsg_tcp.prefs["target_be"]             = Pref.bool("Target is big-endian"  , true, "Is the target using big-endian transfers?")
-	p_simplemsg_tcp.prefs["autodetect_endianness"] = Pref.bool("Auto-detect endianness", true, "Should endianness of data be auto-detected?")
+	p_simplemsg_tcp.prefs["target_be"]              = Pref.bool("Target is big-endian"  , true, "Is the target using big-endian transfers?")
+	p_simplemsg_tcp.prefs["autodetect_endianness"]  = Pref.bool("Auto-detect endianness", true, "Should endianness of data be auto-detected?")
+	p_simplemsg_tcp.prefs["display_invalid_fields"] = Pref.bool("Show invalid fields"   , true, "Should values for invalid fields be displayed (in messages with a 'valid fields' field)?")
 
 
 
@@ -714,20 +716,37 @@ do
 		vf_lo:append_text(_F(" (%s)", stringify_flagbits(valid_fields, valid_field_type_str)))
 
 		-- time
-		pref_tree_add(body_tree, f.jtptf_time, buf, offset_, 4)
+		if (bit.band(VALID_FIELD_TYPE_TIME, valid_fields) > 0) or (config.display_invalid_fields) then
+			pref_tree_add(body_tree, f.jtptf_time, buf, offset_, 4)
+		end
 		offset_ = offset_ + 4
 
 		-- positions
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
-			"Positions", "J%d")
+		if (bit.band(VALID_FIELD_TYPE_POSITION, valid_fields) > 0) or (config.display_invalid_fields) then
+			offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
+				"Positions", "J%d")
+		else
+			-- TODO: remove hard-coded float and array size
+			offset_ = offset_ + (10 * 4)
+		end
 
 		-- velocities
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
-			"Velocities", "J%d")
+		if (bit.band(VALID_FIELD_TYPE_VELOCITY, valid_fields) > 0) or (config.display_invalid_fields) then
+			offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
+				"Velocities", "J%d")
+		else
+			-- TODO: remove hard-coded float and array size
+			offset_ = offset_ + (10 * 4)
+		end
 
 		-- accelerations
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
-			"Accelerations", "J%d")
+		if (bit.band(VALID_FIELD_TYPE_ACCELERATION, valid_fields) > 0) or (config.display_invalid_fields) then
+			offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
+				"Accelerations", "J%d")
+		else
+			-- TODO: remove hard-coded float and array size
+			offset_ = offset_ + (10 * 4)
+		end
 
 		-- nr of bytes we consumed
 		local tlen = offset_ - offset
@@ -769,20 +788,37 @@ do
 		vf_lo:append_text(_F(" (%s)", stringify_flagbits(valid_fields, valid_field_type_str)))
 
 		-- time
-		pref_tree_add(body_tree, f.jf_time, buf, offset_, 4)
+		if (bit.band(VALID_FIELD_TYPE_TIME, valid_fields) > 0) or (config.display_invalid_fields) then
+			pref_tree_add(body_tree, f.jf_time, buf, offset_, 4)
+		end
 		offset_ = offset_ + 4
 
 		-- positions
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
-			"Positions", "J%d")
+		if (bit.band(VALID_FIELD_TYPE_POSITION, valid_fields) > 0) or (config.display_invalid_fields) then
+			offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
+				"Positions", "J%d")
+		else
+			-- TODO: remove hard-coded float and array size
+			offset_ = offset_ + (10 * 4)
+		end
 
 		-- velocities
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
-			"Velocities", "J%d")
+		if (bit.band(VALID_FIELD_TYPE_VELOCITY, valid_fields) > 0) or (config.display_invalid_fields) then
+			offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
+				"Velocities", "J%d")
+		else
+			-- TODO: remove hard-coded float and array size
+			offset_ = offset_ + (10 * 4)
+		end
 
 		-- accelerations
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
-			"Accelerations", "J%d")
+		if (bit.band(VALID_FIELD_TYPE_ACCELERATION, valid_fields) > 0) or (config.display_invalid_fields) then
+			offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
+				"Accelerations", "J%d")
+		else
+			-- TODO: remove hard-coded float and array size
+			offset_ = offset_ + (10 * 4)
+		end
 
 		-- nr of bytes we consumed
 		local tlen = offset_ - offset
@@ -924,20 +960,37 @@ do
 			vf_lo:append_text(_F(" (%s)", stringify_flagbits(valid_fields, valid_field_type_str)))
 
 			-- time
-			pref_tree_add(group_tree, f.mmjtptfex_time, buf, offset_, 4)
+			if (bit.band(VALID_FIELD_TYPE_TIME, valid_fields) > 0) or (config.display_invalid_fields) then
+				pref_tree_add(group_tree, f.mmjtptfex_time, buf, offset_, 4)
+			end
 			offset_ = offset_ + 4
 
 			-- positions
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
-				"Positions", "J%d")
+			if (bit.band(VALID_FIELD_TYPE_POSITION, valid_fields) > 0) or (config.display_invalid_fields) then
+				offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
+					"Positions", "J%d")
+			else
+				-- TODO: remove hard-coded float and array size
+				offset_ = offset_ + (10 * 4)
+			end
 
 			-- velocities
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
-				"Velocities", "J%d")
+			if (bit.band(VALID_FIELD_TYPE_VELOCITY, valid_fields) > 0) or (config.display_invalid_fields) then
+				offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
+					"Velocities", "J%d")
+			else
+				-- TODO: remove hard-coded float and array size
+				offset_ = offset_ + (10 * 4)
+			end
 
 			-- accelerations
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
-				"Accelerations", "J%d")
+			if (bit.band(VALID_FIELD_TYPE_ACCELERATION, valid_fields) > 0) or (config.display_invalid_fields) then
+				offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
+					"Accelerations", "J%d")
+			else
+				-- TODO: remove hard-coded float and array size
+				offset_ = offset_ + (10 * 4)
+			end
 
 			-- correct length of TreeItem
 			group_tree:set_len(offset_ - group_tree_start)
@@ -998,20 +1051,37 @@ do
 			vf_lo:append_text(_F(" (%s)", stringify_flagbits(valid_fields, valid_field_type_str)))
 
 			-- time
-			pref_tree_add(group_tree, f.mmjfex_time, buf, offset_, 4)
+			if (bit.band(VALID_FIELD_TYPE_TIME, valid_fields) > 0) or (config.display_invalid_fields) then
+				pref_tree_add(group_tree, f.mmjfex_time, buf, offset_, 4)
+			end
 			offset_ = offset_ + 4
 
 			-- positions
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
-				"Positions", "J%d")
+			if (bit.band(VALID_FIELD_TYPE_POSITION, valid_fields) > 0) or (config.display_invalid_fields) then
+				offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
+					"Positions", "J%d")
+			else
+				-- TODO: remove hard-coded float and array size
+				offset_ = offset_ + (10 * 4)
+			end
 
 			-- velocities
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
-				"Velocities", "J%d")
+			if (bit.band(VALID_FIELD_TYPE_VELOCITY, valid_fields) > 0) or (config.display_invalid_fields) then
+				offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
+					"Velocities", "J%d")
+			else
+				-- TODO: remove hard-coded float and array size
+				offset_ = offset_ + (10 * 4)
+			end
 
 			-- accelerations
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
-				"Accelerations", "J%d")
+			if (bit.band(VALID_FIELD_TYPE_ACCELERATION, valid_fields) > 0) or (config.display_invalid_fields) then
+				offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
+					"Accelerations", "J%d")
+			else
+				-- TODO: remove hard-coded float and array size
+				offset_ = offset_ + (10 * 4)
+			end
 
 			-- correct length of TreeItem
 			group_tree:set_len(offset_ - group_tree_start)
@@ -1200,8 +1270,9 @@ do
 	--
 	function p_simplemsg_tcp.init()
 		-- update config from prefs
-		config.target_be             = p_simplemsg_tcp.prefs["target_be"]
-		config.autodetect_endianness = p_simplemsg_tcp.prefs["autodetect_endianness"]
+		config.target_be              = p_simplemsg_tcp.prefs["target_be"]
+		config.autodetect_endianness  = p_simplemsg_tcp.prefs["autodetect_endianness"]
+		config.display_invalid_fields = p_simplemsg_tcp.prefs["display_invalid_fields"]
 	end
 
 
