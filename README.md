@@ -1,5 +1,5 @@
 # packet-simplemessage
-v0.1.4
+v0.1.5
 
 
 ## Overview
@@ -29,6 +29,7 @@ Tested on (but should work on other versions and OS as well):
    * Wireshark 1.11.0-SVN-50116
  * Linux
    * Wireshark 1.11.0+svn50816
+   * Wireshark 1.12.0-unknown-unknown
 
 
 ## Installation
