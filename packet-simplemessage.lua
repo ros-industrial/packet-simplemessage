@@ -2,43 +2,43 @@
   Routines for ROS Industrial SimpleMessage dissection
   Copyright (c) 2013, G.A. vd. Hoorn, TU Delft Robotics Institute
   All rights reserved.
-  
+
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
   as published by the Free Software Foundation; either version 2
   of the License, or (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-  
+
   ---
-  
+
   Wireshark dissector in Lua for the ROS Industrial SimpleMessage protocol.
   For more information on the protocol, see [1].
-  
+
   Written for the 'groovy' version of the SimpleMessage protocol.
-  
+
   Tested on Wireshark 1.9.0-SVN-46273 on Windows.
-  
+
   Known issues and open feature requests, see [2].
-  
-  
+
+
   Author: G.A. vd. Hoorn, TU Delft Robotics Institute
-  
+
   [1] http://ros.org/wiki/simple_message
   [2] https://github.com/ros-industrial/packet-simplemessage/issues
 ]]
 do
 
-	-- 
+	--
 	-- constants
-	-- 
+	--
 	local DISSECTOR_VERSION             = "0.1.5"
 
 	local MIN_PKT_LEN                   = 44
@@ -138,9 +138,9 @@ do
 
 
 
-	-- 
+	--
 	-- misc
-	-- 
+	--
 
 	-- cache globals to local for speed
 	local _F = string.format
@@ -159,9 +159,9 @@ do
 
 
 
-	-- 
+	--
 	-- constant -> string rep tables
-	-- 
+	--
 
 	local set_not_set_str = {
 		[0] = "Not set",
@@ -173,7 +173,7 @@ do
 		[1] = "Valid"
 	}
 
-	local pkt_types_str = { 
+	local pkt_types_str = {
 		[MSG_PING                 ] = "Ping",
 		[MSG_JOINT_POSITION       ] = "Joint Position",
 		[MSG_JOINT_TRAJ_PT        ] = "Joint Trajectory Point",
@@ -286,9 +286,9 @@ do
 
 
 
-	-- 
+	--
 	-- Protocol object creation and setup
-	-- 
+	--
 	local p_simplemsg_tcp = Proto("SIMPLEMESSAGE", "ROS Industrial SimpleMessage")
 
 	-- preferences
@@ -300,7 +300,7 @@ do
 
 
 
-	-- 
+	--
 	-- protocol fields
 	--
 	local f = p_simplemsg_tcp.fields
@@ -337,7 +337,7 @@ do
 	f.jtptf_vf_vel   = ProtoField.uint8("simplemessage.jtptf.vf.vel"  , "Velocity     "  , base.DEC, in_valid_str , VALID_FIELD_TYPE_VELOCITY    , "Validity of velocity data")
 	f.jtptf_vf_accel = ProtoField.uint8("simplemessage.jtptf.vf.accel", "Acceleration "  , base.DEC, in_valid_str , VALID_FIELD_TYPE_ACCELERATION, "Validity of acceleration data")
 	f.jtptf_time     = ProtoField.float("simplemessage.jtptf.time"    , "Time"           , "Timestamp for data (seconds, optional)")
-	
+
 	-- protocol fields: JOINT_TRAJ_PT_FULL_EX
 	f.jtptfex_validgroups = ProtoField.int32("simplemessage.jtptfex.vg"      , "Valid Groups"   , base.DEC, nil          , nil                          , "Number of valid groups")
 	f.jtptfex_seq_nr      = ProtoField.int32("simplemessage.jtptfex.seq"     , "Sequence Number", base.DEC, nil          , nil                          , "Index of point in trajectory")
@@ -357,7 +357,7 @@ do
 	f.jf_vf_vel   = ProtoField.uint8("simplemessage.jf.vf.vel"  , "Velocity     "  , base.DEC, in_valid_str, VALID_FIELD_TYPE_VELOCITY    , "Validity of velocity data")
 	f.jf_vf_accel = ProtoField.uint8("simplemessage.jf.vf.accel", "Acceleration "  , base.DEC, in_valid_str, VALID_FIELD_TYPE_ACCELERATION, "Validity of acceleration data")
 	f.jf_time     = ProtoField.float("simplemessage.jf.time"    , "Time"           , "Timestamp for data (seconds, optional)")
-	
+
 	-- protocol fields: JOINT_FEEDBACK_EX
 	f.jfex_numgroups = ProtoField.int32("simplemessage.jfex.numgroups", "Number of Groups", base.DEC, nil         , nil                          , "Number of groups")
 	f.jfex_robotid   = ProtoField.int32("simplemessage.jfex.rid"      , "Robot ID"        , base.DEC, nil         , nil                          , "Robot identifier")
@@ -385,9 +385,9 @@ do
 
 
 
-	-- 
+	--
 	-- Helper functions
-	-- 
+	--
 
 	local function pref_uint(buf, offset, len)
 		if config.target_be then
@@ -436,9 +436,9 @@ do
 		if ((len % 4) ~= 0) or (len > 8) then return nil end
 
 		return tree:add(buf(offset, len), text)
-			:append_text(_F(": %s", 
-				_F(format, 
-				   pref_float(buf, offset, len)), 
+			:append_text(_F(": %s",
+				_F(format,
+				   pref_float(buf, offset, len)),
 				   pref_uint(buf, offset, len)))
 	end
 
@@ -463,20 +463,20 @@ do
 
 
 
-	-- 
+	--
 	-- Dissection subfunctions
-	-- 
+	--
 
 
-	-- 
+	--
 	-- Header
-	-- 
+	--
 	local function disf_header(buf, pkt, tree, offset)
-		-- 
+		--
 		local offset_ = offset
 		local lt = tree
 
-		-- 
+		--
 		local hdr_tree = lt:add(buf(offset_, 0), "Header")
 
 		-- message type
@@ -499,15 +499,15 @@ do
 
 
 
-	-- 
+	--
 	-- array of N floats
-	-- 
+	--
 	local function disf_float_array(buf, pkt, tree, offset, array_sz, text, item_fmt)
-		-- 
+		--
 		local offset_ = offset
 		local lt = tree
 
-		-- 
+		--
 		local jd_tree = lt:add(buf(offset_, 0), text)
 
 		for i = 0, (array_sz - 1) do
@@ -523,11 +523,11 @@ do
 
 
 
-	-- 
+	--
 	-- PING
-	-- 
+	--
 	local function disf_ping(buf, pkt, tree, offset)
-		-- 
+		--
 		local offset_ = offset
 		local lt = tree
 
@@ -535,7 +535,7 @@ do
 		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
 
 		-- joint data
-		offset_ = offset_ + disf_float_array(buf, pkt, tree, offset_, 10, 
+		offset_ = offset_ + disf_float_array(buf, pkt, tree, offset_, 10,
 			"Data", "J%d")
 
 
@@ -545,11 +545,11 @@ do
 
 
 
-	-- 
+	--
 	-- JOINT_POSITION
-	-- 
+	--
 	local function disf_joint_position(buf, pkt, tree, offset)
-		-- 
+		--
 		local offset_ = offset
 		local lt = tree
 
@@ -561,17 +561,17 @@ do
 
 		-- sequence number
 		local seq_nr = pref_int(buf, offset_, 4)
-		local seq_field = pref_tree_add(body_tree, f.jp_seq_nr, buf, 
+		local seq_field = pref_tree_add(body_tree, f.jp_seq_nr, buf,
 			offset_, 4)
 		offset_ = offset_ + 4
 
 		if (seq_nr < 0) then
-			seq_field:append_text(_F(": %s", str_or_none(special_seq_nr_str, 
+			seq_field:append_text(_F(": %s", str_or_none(special_seq_nr_str,
 				seq_nr)))
 		end
 
 		-- joint data
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
 			"Joint Data", "J%d")
 
 		-- nr of bytes we consumed
@@ -582,11 +582,11 @@ do
 
 
 
-	-- 
+	--
 	-- JOINT_TRAJ_PT
-	-- 
+	--
 	local function disf_joint_traj_point(buf, pkt, tree, offset)
-		-- 
+		--
 		local offset_ = offset
 		local lt = tree
 
@@ -598,7 +598,7 @@ do
 
 		-- sequence number
 		local seq_nr = pref_int(buf, offset_, 4)
-		local seq_field = pref_tree_add(body_tree, f.jtpt_seq_nr, buf, 
+		local seq_field = pref_tree_add(body_tree, f.jtpt_seq_nr, buf,
 			offset_, 4)
 		offset_ = offset_ + 4
 
@@ -609,7 +609,7 @@ do
 		end
 
 		-- joint data
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
 			"Joint Data", "J%d")
 
 		-- velocity
@@ -628,11 +628,11 @@ do
 
 
 
-	-- 
+	--
 	-- STATUS
-	-- 
+	--
 	local function disf_status(buf, pkt, tree, offset)
-		-- 
+		--
 		local offset_ = offset
 		local lt = tree
 
@@ -678,11 +678,11 @@ do
 
 
 
-	-- 
+	--
 	-- JOINT_TRAJ_PT_FULL
-	-- 
+	--
 	local function disf_joint_traj_point_full(buf, pkt, tree, offset)
-		-- 
+		--
 		local offset_ = offset
 		local lt = tree
 
@@ -718,15 +718,15 @@ do
 		offset_ = offset_ + 4
 
 		-- positions
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
 			"Positions", "J%d")
 
 		-- velocities
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
 			"Velocities", "J%d")
 
 		-- accelerations
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
 			"Accelerations", "J%d")
 
 		-- nr of bytes we consumed
@@ -737,11 +737,11 @@ do
 
 
 
-	-- 
+	--
 	-- JOINT_TRAJ_PT_FULL_EX
-	-- 
+	--
 	local function disf_joint_traj_point_full_ex(buf, pkt, tree, offset)
-		-- 
+		--
 		local offset_ = offset
 		local lt = tree
 
@@ -762,7 +762,7 @@ do
 
 		local i = 0
 		repeat
-			-- 
+			--
 			local group_tree_start = offset_
 			local group_tree = body_tree:add(buf(offset_, 0), _F("Group %d", i))
 
@@ -789,15 +789,15 @@ do
 			offset_ = offset_ + 4
 
 			-- positions
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10, 
+			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
 				"Positions", "J%d")
 
 			-- velocities
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10, 
+			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
 				"Velocities", "J%d")
 
 			-- accelerations
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10, 
+			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
 				"Accelerations", "J%d")
 
 			-- correct length of TreeItem
@@ -815,11 +815,11 @@ do
 
 
 
-	-- 
+	--
 	-- JOINT_FEEDBACK
-	-- 
+	--
 	local function disf_joint_feedback(buf, pkt, tree, offset)
-		-- 
+		--
 		local offset_ = offset
 		local lt = tree
 
@@ -851,15 +851,15 @@ do
 		offset_ = offset_ + 4
 
 		-- positions
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
 			"Positions", "J%d")
 
 		-- velocities
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
 			"Velocities", "J%d")
 
 		-- accelerations
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
 			"Accelerations", "J%d")
 
 		-- nr of bytes we consumed
@@ -870,11 +870,11 @@ do
 
 
 
-	-- 
+	--
 	-- JOINT_FEEDBACK_EX
-	-- 
+	--
 	local function disf_joint_feedback_ex(buf, pkt, tree, offset)
-		-- 
+		--
 		local offset_ = offset
 		local lt = tree
 
@@ -891,7 +891,7 @@ do
 
 		local i = 0
 		repeat
-			-- 
+			--
 			local group_tree_start = offset_
 			local group_tree = body_tree:add(buf(offset_, 0), _F("Group %d", i))
 
@@ -918,15 +918,15 @@ do
 			offset_ = offset_ + 4
 
 			-- positions
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10, 
+			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
 				"Positions", "J%d")
 
 			-- velocities
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10, 
+			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
 				"Velocities", "J%d")
 
 			-- accelerations
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10, 
+			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
 				"Accelerations", "J%d")
 
 			-- correct length of TreeItem
@@ -944,11 +944,11 @@ do
 
 
 
-	-- 
+	--
 	-- MOTO_MOTION_CTRL
-	-- 
+	--
 	local function disf_motoman_ctrl(buf, pkt, tree, offset)
-		-- 
+		--
 		local offset_ = offset
 		local lt = tree
 
@@ -970,8 +970,8 @@ do
 		pref_tree_add(body_tree, f.mmc_command, buf, offset_, 4)
 		offset_ = offset_ + 4
 
-		-- 
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+		--
+		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
 			"Data (reserved)", "J%d")
 
 		-- nr of bytes we consumed
@@ -982,11 +982,11 @@ do
 
 
 
-	-- 
+	--
 	-- MOTO_MOTION_REPLY
-	-- 
+	--
 	local function disf_motoman_reply(buf, pkt, tree, offset)
-		-- 
+		--
 		local offset_ = offset
 		local lt = tree
 
@@ -1016,8 +1016,8 @@ do
 		pref_tree_add(body_tree, f.mmr_subc, buf, offset_, 4)
 		offset_ = offset_ + 4
 
-		-- 
-		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10, 
+		--
+		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
 			"Data (reserved)", "J%d")
 
 		-- nr of bytes we consumed
@@ -1028,18 +1028,18 @@ do
 
 
 
-	-- 
+	--
 	-- Default parser
-	-- 
+	--
 	local function disf_default(buf, pkt, tree, offset)
-		-- 
+		--
 		local offset_ = offset
 		local lt = tree
 
 		-- header
 		offset_ = offset_ + disf_header(buf, pkt, lt, offset_)
 
-		-- 
+		--
 		local zlen = buf:len() - offset_
 		local z = lt:add(buf(offset_, zlen), _F("Unhandled, %u bytes", zlen))
 		offset_ = offset_ + zlen
@@ -1053,9 +1053,9 @@ do
 
 
 
-	-- 
+	--
 	-- message type -> dissection function map
-	-- 
+	--
 	local map_msg_type_to_disf = {
 		[MSG_PING                 ] = disf_ping,
 		[MSG_JOINT_POSITION       ] = disf_joint_position,
@@ -1075,9 +1075,9 @@ do
 
 
 
-	-- 
+	--
 	-- main parser function
-	-- 
+	--
 	local function parse(buf, pkt, tree, offset)
 		local offset_ = offset
 		local lt = tree
@@ -1108,9 +1108,9 @@ do
 
 
 
-	-- 
+	--
 	-- actual dissector method
-	-- 
+	--
 	function p_simplemsg_tcp.dissector(buf, pkt, tree)
 		-- check pkt len
 		local buf_len = buf:len()
@@ -1121,8 +1121,8 @@ do
 
 		-- keep dissecting as long as there are bytes available
 		while true do
-			-- TODO: this probably isn't too good an idea if there are streams 
-			--       of more than one robot in the capture (with different 
+			-- TODO: this probably isn't too good an idea if there are streams
+			--       of more than one robot in the capture (with different
 			--       endianness)
 			-- detect endianness if enabled
 			local pkt_len = pref_uint(buf, offset, 4)
@@ -1143,7 +1143,7 @@ do
 			-- add prefix length to it
 			pkt_len = pkt_len + 4
 
-			-- make sure we have enough for coming packet. If not, signal 
+			-- make sure we have enough for coming packet. If not, signal
 			-- caller by setting appropriate fields in 'pkt' argument
 			local nextpkt = offset + pkt_len
 			if (nextpkt > buf_len) then
@@ -1162,7 +1162,7 @@ do
 			-- add some extra info to the protocol line in the packet treeview
 			local s_endiannes = "little"
 			if (config.target_be) then s_endiannes = "big" end
-			subtree:append_text(_F(", %s (0x%02x), %u bytes, %s-endian", 
+			subtree:append_text(_F(", %s (0x%02x), %u bytes, %s-endian",
 				pkt_t_str, pkt_type, pkt_len, s_endiannes))
 
 			-- add info to top pkt view
@@ -1179,7 +1179,7 @@ do
 			-- dissect rest of pkt
 			local res = parse(buf, pkt, subtree, offset)
 
-			-- increment 'read pointer' and stop if we've dissected all bytes 
+			-- increment 'read pointer' and stop if we've dissected all bytes
 			-- in the buffer
 			offset = nextpkt
 			if (offset == buf_len) then return end
@@ -1195,9 +1195,9 @@ do
 
 
 
-	-- 
+	--
 	-- init routine
-	-- 
+	--
 	function p_simplemsg_tcp.init()
 		-- update config from prefs
 		config.target_be             = p_simplemsg_tcp.prefs["target_be"]
@@ -1209,9 +1209,9 @@ do
 
 
 
-	-- 
+	--
 	-- register dissector
-	-- 
+	--
 	local tcp_dissector_table = DissectorTable.get("tcp.port")
 
 	-- TODO: make ports to register dissector on configurable via preferences
