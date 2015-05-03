@@ -39,59 +39,59 @@ do
 	--
 	-- constants
 	--
-	local DISSECTOR_VERSION             = "0.1.5"
+	local DISSECTOR_VERSION              = "0.1.5"
 
-	local MIN_PKT_LEN                   = 44
+	local MIN_PKT_LEN                    = 44
 
-	local MSG_PING                      = 0x01
-	local MSG_JOINT_POSITION            = 0x0A
-	local MSG_JOINT_TRAJ_PT             = 0x0B
-	local MSG_JOINT_TRAJ                = 0x0C
-	local MSG_STATUS                    = 0x0D
-	local MSG_JOINT_TRAJ_PT_FULL        = 0x0E
-	local MSG_JOINT_FEEDBACK            = 0x0F
-	local MSG_JOINT_TRAJ_PT_FULL_EX     = 0x10
-	local MSG_JOINT_FEEDBACK_EX         = 0x11
-	local MSG_READ_INPUT                = 0x14
-	local MSG_WRITE_OUTPUT              = 0x15
+	local MSG_PING                       = 0x01
+	local MSG_JOINT_POSITION             = 0x0A
+	local MSG_JOINT_TRAJ_PT              = 0x0B
+	local MSG_JOINT_TRAJ                 = 0x0C
+	local MSG_STATUS                     = 0x0D
+	local MSG_JOINT_TRAJ_PT_FULL         = 0x0E
+	local MSG_JOINT_FEEDBACK             = 0x0F
+	local MSG_READ_INPUT                 = 0x14
+	local MSG_WRITE_OUTPUT               = 0x15
 
-	local MSG_MOTO_BEGIN                = 0x7D0
-	local MSG_MOTO_MOTION_CTRL          = 0x7D1
-	local MSG_MOTO_MOTION_REPLY         = 0x7D2
+	local MSG_MOTO_BEGIN                 = 0x7D0
+	local MSG_MOTO_MOTION_CTRL           = 0x7D1
+	local MSG_MOTO_MOTION_REPLY          = 0x7D2
+	local MSG_MOTO_JOINT_TRAJ_PT_FULL_EX = 0x7E0
+	local MSG_MOTO_JOINT_FEEDBACK_EX     = 0x7E1
 
-	local COMM_INVALID                  = 0x00
-	local COMM_TOPIC                    = 0x01
-	local COMM_SERVICE_REQUEST          = 0x02
-	local COMM_SERVICE_REPL             = 0x03
+	local COMM_INVALID                   = 0x00
+	local COMM_TOPIC                     = 0x01
+	local COMM_SERVICE_REQUEST           = 0x02
+	local COMM_SERVICE_REPL              = 0x03
 
-	local REPLY_INVALID                 = 0x00
-	local REPLY_SUCCESS                 = 0x01
-	local REPLY_FAILURE                 = 0x02
+	local REPLY_INVALID                  = 0x00
+	local REPLY_SUCCESS                  = 0x01
+	local REPLY_FAILURE                  = 0x02
 
-	local START_TRAJECTORY_DOWNLOAD     = -1
-	local START_TRAJECOTRY_STREAMING    = -2
-	local END_TRAJECTORY                = -3
-	local STOP_TRAJECTORY               = -4
+	local START_TRAJECTORY_DOWNLOAD      = -1
+	local START_TRAJECOTRY_STREAMING     = -2
+	local END_TRAJECTORY                 = -3
+	local STOP_TRAJECTORY                = -4
 
-	local VALID_FIELD_TYPE_TIME         = 0x01
-	local VALID_FIELD_TYPE_POSITION     = 0x02
-	local VALID_FIELD_TYPE_VELOCITY     = 0x04
-	local VALID_FIELD_TYPE_ACCELERATION = 0x08
+	local VALID_FIELD_TYPE_TIME          = 0x01
+	local VALID_FIELD_TYPE_POSITION      = 0x02
+	local VALID_FIELD_TYPE_VELOCITY      = 0x04
+	local VALID_FIELD_TYPE_ACCELERATION  = 0x08
 
-	local STATUS_ROBOTMODE_UNKNOWN      = -1
-	local STATUS_ROBOTMODE_MANUAL       =  1
-	local STATUS_ROBOTMODE_AUTO         =  2
+	local STATUS_ROBOTMODE_UNKNOWN       = -1
+	local STATUS_ROBOTMODE_MANUAL        =  1
+	local STATUS_ROBOTMODE_AUTO          =  2
 
-	local STATUS_TRISTATE_UNKNOWN       = -1
-	local STATUS_TRISTATE_OFF           =  0
-	local STATUS_TRISTATE_FALSE         =  0
-	local STATUS_TRISTATE_ON            =  1
-	local STATUS_TRISTATE_TRUE          =  1
+	local STATUS_TRISTATE_UNKNOWN        = -1
+	local STATUS_TRISTATE_OFF            =  0
+	local STATUS_TRISTATE_FALSE          =  0
+	local STATUS_TRISTATE_ON             =  1
+	local STATUS_TRISTATE_TRUE           =  1
 
 
 	local MOTO_MOTION_CTRL_CMD_UNDEFINED                      = 0
 	local MOTO_MOTION_CTRL_CMD_JOINT_TRAJ_PT_FULL             = MSG_JOINT_TRAJ_PT_FULL
-	local MOTO_MOTION_CTRL_CMD_JOINT_TRAJ_PT_FULL_EX          = MSG_JOINT_TRAJ_PT_FULL_EX
+	local MOTO_MOTION_CTRL_CMD_JOINT_TRAJ_PT_FULL_EX          = MSG_MOTO_JOINT_TRAJ_PT_FULL_EX
 	local MOTO_MOTION_CTRL_CMD_CHECK_MOTION_READY             = 200101
 	local MOTO_MOTION_CTRL_CMD_CHECK_QUEUE_CNT                = 200102
 	local MOTO_MOTION_CTRL_CMD_STOP_MOTION                    = 200111
@@ -174,21 +174,21 @@ do
 	}
 
 	local pkt_types_str = {
-		[MSG_PING                 ] = "Ping",
-		[MSG_JOINT_POSITION       ] = "Joint Position",
-		[MSG_JOINT_TRAJ_PT        ] = "Joint Trajectory Point",
-		[MSG_JOINT_TRAJ           ] = "Joint Trajectory",
-		[MSG_STATUS               ] = "Status",
-		[MSG_JOINT_TRAJ_PT_FULL   ] = "Joint Trajectory Point Full",
-		[MSG_JOINT_FEEDBACK       ] = "Joint Feedback",
-		[MSG_JOINT_TRAJ_PT_FULL_EX] = "Joint Trajectory Point Full Extended",
-		[MSG_JOINT_FEEDBACK_EX    ] = "Joint Feedback Extended",
-		[MSG_READ_INPUT           ] = "Read Input",
-		[MSG_WRITE_OUTPUT         ] = "Write Output",
+		[MSG_PING                      ] = "Ping",
+		[MSG_JOINT_POSITION            ] = "Joint Position",
+		[MSG_JOINT_TRAJ_PT             ] = "Joint Trajectory Point",
+		[MSG_JOINT_TRAJ                ] = "Joint Trajectory",
+		[MSG_STATUS                    ] = "Status",
+		[MSG_JOINT_TRAJ_PT_FULL        ] = "Joint Trajectory Point Full",
+		[MSG_JOINT_FEEDBACK            ] = "Joint Feedback",
+		[MSG_READ_INPUT                ] = "Read Input",
+		[MSG_WRITE_OUTPUT              ] = "Write Output",
 
-		[MSG_MOTO_BEGIN        ] = "Motoman Msg Begin (BUG)",
-		[MSG_MOTO_MOTION_CTRL  ] = "Motoman Motion Ctrl",
-		[MSG_MOTO_MOTION_REPLY ] = "Motoman Motion Reply"
+		[MSG_MOTO_BEGIN                ] = "Motoman Msg Begin (BUG)",
+		[MSG_MOTO_MOTION_CTRL          ] = "Motoman Motion Ctrl",
+		[MSG_MOTO_MOTION_REPLY         ] = "Motoman Motion Reply",
+		[MSG_MOTO_JOINT_TRAJ_PT_FULL_EX] = "Motoman Joint Trajectory Point Full Extended",
+		[MSG_MOTO_JOINT_FEEDBACK_EX    ] = "Motoman Joint Feedback Extended",
 	}
 
 	local comm_types_str = {
@@ -338,17 +338,6 @@ do
 	f.jtptf_vf_accel = ProtoField.uint8("simplemessage.jtptf.vf.accel", "Acceleration "  , base.DEC, in_valid_str , VALID_FIELD_TYPE_ACCELERATION, "Validity of acceleration data")
 	f.jtptf_time     = ProtoField.float("simplemessage.jtptf.time"    , "Time"           , "Timestamp for data (seconds, optional)")
 
-	-- protocol fields: JOINT_TRAJ_PT_FULL_EX
-	f.jtptfex_validgroups = ProtoField.int32("simplemessage.jtptfex.vg"      , "Valid Groups"   , base.DEC, nil          , nil                          , "Number of valid groups")
-	f.jtptfex_seq_nr      = ProtoField.int32("simplemessage.jtptfex.seq"     , "Sequence Number", base.DEC, nil          , nil                          , "Index of point in trajectory")
-	f.jtptfex_robotid     = ProtoField.int32("simplemessage.jtptfex.rid"     , "Robot ID"       , base.DEC, nil          , nil                          , "Robot identifier")
-	f.jtptfex_vf          = ProtoField.uint8("simplemessage.jtptfex.vf"      , "Valid Fields"   , base.HEX, nil          , nil                          , "Fields that contain valid data")
-	f.jtptfex_vf_time     = ProtoField.uint8("simplemessage.jtptfex.vf.time" , "Time         "  , base.DEC, in_valid_str , VALID_FIELD_TYPE_TIME        , "Validity of time field")
-	f.jtptfex_vf_pos      = ProtoField.uint8("simplemessage.jtptfex.vf.pos"  , "Position     "  , base.DEC, in_valid_str , VALID_FIELD_TYPE_POSITION    , "Validity of position data")
-	f.jtptfex_vf_vel      = ProtoField.uint8("simplemessage.jtptfex.vf.vel"  , "Velocity     "  , base.DEC, in_valid_str , VALID_FIELD_TYPE_VELOCITY    , "Validity of velocity data")
-	f.jtptfex_vf_accel    = ProtoField.uint8("simplemessage.jtptfex.vf.accel", "Acceleration "  , base.DEC, in_valid_str , VALID_FIELD_TYPE_ACCELERATION, "Validity of acceleration data")
-	f.jtptfex_time        = ProtoField.float("simplemessage.jtptfex.time"    , "Time"           , "Timestamp for data (seconds, optional)")
-
 	-- protocol fields: JOINT_FEEDBACK
 	f.jf_robotid  = ProtoField.int32("simplemessage.jf.rid"     , "Robot ID"       , base.DEC, nil         , nil                          , "Robot identifier")
 	f.jf_vf       = ProtoField.uint8("simplemessage.jf.vf"      , "Valid Fields"   , base.HEX, nil         , nil                          , "Fields that contain valid data")
@@ -357,16 +346,6 @@ do
 	f.jf_vf_vel   = ProtoField.uint8("simplemessage.jf.vf.vel"  , "Velocity     "  , base.DEC, in_valid_str, VALID_FIELD_TYPE_VELOCITY    , "Validity of velocity data")
 	f.jf_vf_accel = ProtoField.uint8("simplemessage.jf.vf.accel", "Acceleration "  , base.DEC, in_valid_str, VALID_FIELD_TYPE_ACCELERATION, "Validity of acceleration data")
 	f.jf_time     = ProtoField.float("simplemessage.jf.time"    , "Time"           , "Timestamp for data (seconds, optional)")
-
-	-- protocol fields: JOINT_FEEDBACK_EX
-	f.jfex_numgroups = ProtoField.int32("simplemessage.jfex.numgroups", "Number of Groups", base.DEC, nil         , nil                          , "Number of groups")
-	f.jfex_robotid   = ProtoField.int32("simplemessage.jfex.rid"      , "Robot ID"        , base.DEC, nil         , nil                          , "Robot identifier")
-	f.jfex_vf        = ProtoField.uint8("simplemessage.jfex.vf"       , "Valid Fields"    , base.HEX, nil         , nil                          , "Fields that contain valid data")
-	f.jfex_vf_time   = ProtoField.uint8("simplemessage.jfex.vf.time"  , "Time         "   , base.DEC, in_valid_str, VALID_FIELD_TYPE_TIME        , "Validity of time field")
-	f.jfex_vf_pos    = ProtoField.uint8("simplemessage.jfex.vf.pos"   , "Position     "   , base.DEC, in_valid_str, VALID_FIELD_TYPE_POSITION    , "Validity of position data")
-	f.jfex_vf_vel    = ProtoField.uint8("simplemessage.jfex.vf.vel"   , "Velocity     "   , base.DEC, in_valid_str, VALID_FIELD_TYPE_VELOCITY    , "Validity of velocity data")
-	f.jfex_vf_accel  = ProtoField.uint8("simplemessage.jfex.vf.accel" , "Acceleration "   , base.DEC, in_valid_str, VALID_FIELD_TYPE_ACCELERATION, "Validity of acceleration data")
-	f.jfex_time      = ProtoField.float("simplemessage.jfex.time"     , "Time"            , "Timestamp for data (seconds, optional)")
 
 	-- protocol fields: MOTO_MOTION_CTRL
 	f.mmc_robotid = ProtoField.int32("simplemessage.mmc.rid"     , "Robot ID"       , base.DEC, nil                 , nil, "Robot identifier")
@@ -379,6 +358,27 @@ do
 	f.mmr_command  = ProtoField.int32("simplemessage.mmr.command" , "Command"        , base.DEC, motoman_ctrl_cmd_str      , nil, "Command executed")
 	f.mmr_res      = ProtoField.int32("simplemessage.mmr.result"  , "Result"         , base.DEC, motoman_reply_results_str , nil, "Result of executing specified command")
 	f.mmr_subc     = ProtoField.int32("simplemessage.mmr.subcode" , "Subcode"        , base.DEC, motoman_reply_subcodes_str, nil, "More detailed result code")
+
+	-- protocol fields: MOTOMAN_JOINT_TRAJ_PT_FULL_EX
+	f.mmjtptfex_validgroups = ProtoField.int32("simplemessage.mmjtptfex.vg"      , "Valid Groups"   , base.DEC, nil          , nil                          , "Number of valid groups")
+	f.mmjtptfex_seq_nr      = ProtoField.int32("simplemessage.mmjtptfex.seq"     , "Sequence Number", base.DEC, nil          , nil                          , "Index of point in trajectory")
+	f.mmjtptfex_robotid     = ProtoField.int32("simplemessage.mmjtptfex.rid"     , "Robot ID"       , base.DEC, nil          , nil                          , "Robot identifier")
+	f.mmjtptfex_vf          = ProtoField.uint8("simplemessage.mmjtptfex.vf"      , "Valid Fields"   , base.HEX, nil          , nil                          , "Fields that contain valid data")
+	f.mmjtptfex_vf_time     = ProtoField.uint8("simplemessage.mmjtptfex.vf.time" , "Time         "  , base.DEC, in_valid_str , VALID_FIELD_TYPE_TIME        , "Validity of time field")
+	f.mmjtptfex_vf_pos      = ProtoField.uint8("simplemessage.mmjtptfex.vf.pos"  , "Position     "  , base.DEC, in_valid_str , VALID_FIELD_TYPE_POSITION    , "Validity of position data")
+	f.mmjtptfex_vf_vel      = ProtoField.uint8("simplemessage.mmjtptfex.vf.vel"  , "Velocity     "  , base.DEC, in_valid_str , VALID_FIELD_TYPE_VELOCITY    , "Validity of velocity data")
+	f.mmjtptfex_vf_accel    = ProtoField.uint8("simplemessage.mmjtptfex.vf.accel", "Acceleration "  , base.DEC, in_valid_str , VALID_FIELD_TYPE_ACCELERATION, "Validity of acceleration data")
+	f.mmjtptfex_time        = ProtoField.float("simplemessage.mmjtptfex.time"    , "Time"           , "Timestamp for data (seconds, optional)")
+
+	-- protocol fields: MOTOMAN_JOINT_FEEDBACK_EX
+	f.mmjfex_numgroups = ProtoField.int32("simplemessage.mmjfex.numgroups", "Number of Groups", base.DEC, nil         , nil                          , "Number of groups")
+	f.mmjfex_robotid   = ProtoField.int32("simplemessage.mmjfex.rid"      , "Robot ID"        , base.DEC, nil         , nil                          , "Robot identifier")
+	f.mmjfex_vf        = ProtoField.uint8("simplemessage.mmjfex.vf"       , "Valid Fields"    , base.HEX, nil         , nil                          , "Fields that contain valid data")
+	f.mmjfex_vf_time   = ProtoField.uint8("simplemessage.mmjfex.vf.time"  , "Time         "   , base.DEC, in_valid_str, VALID_FIELD_TYPE_TIME        , "Validity of time field")
+	f.mmjfex_vf_pos    = ProtoField.uint8("simplemessage.mmjfex.vf.pos"   , "Position     "   , base.DEC, in_valid_str, VALID_FIELD_TYPE_POSITION    , "Validity of position data")
+	f.mmjfex_vf_vel    = ProtoField.uint8("simplemessage.mmjfex.vf.vel"   , "Velocity     "   , base.DEC, in_valid_str, VALID_FIELD_TYPE_VELOCITY    , "Validity of velocity data")
+	f.mmjfex_vf_accel  = ProtoField.uint8("simplemessage.mmjfex.vf.accel" , "Acceleration "   , base.DEC, in_valid_str, VALID_FIELD_TYPE_ACCELERATION, "Validity of acceleration data")
+	f.mmjfex_time      = ProtoField.float("simplemessage.mmjfex.time"     , "Time"            , "Timestamp for data (seconds, optional)")
 
 
 
@@ -738,84 +738,6 @@ do
 
 
 	--
-	-- JOINT_TRAJ_PT_FULL_EX
-	--
-	local function disf_joint_traj_point_full_ex(buf, pkt, tree, offset)
-		--
-		local offset_ = offset
-		local lt = tree
-
-		-- header
-		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
-
-		-- body
-		local body_tree = lt:add(buf(offset_, 0), "Body")
-
-		-- number of valid groups
-		local valid_groups = pref_uint(buf, offset_, 4)
-		pref_tree_add(body_tree, f.jtptfex_validgroups, buf, offset_, 4)
-		offset_ = offset_ + 4
-
-		-- sequence number
-		pref_tree_add(body_tree, f.jtptfex_seq_nr, buf, offset_, 4)
-		offset_ = offset_ + 4
-
-		local i = 0
-		repeat
-			--
-			local group_tree_start = offset_
-			local group_tree = body_tree:add(buf(offset_, 0), _F("Group %d", i))
-
-			-- robot id
-			pref_tree_add(group_tree, f.jtptfex_robotid, buf, offset_, 4)
-			offset_ = offset_ + 4
-
-			-- valid_fields
-			local valid_fields = pref_uint(buf, offset_, 4)
-			local vf_lo = pref_tree_add(group_tree, f.jtptfex_vf, buf, offset_, 4)
-
-			-- bitfield
-			pref_tree_add(vf_lo, f.jtptfex_vf_time,  buf, offset_, 4)
-			pref_tree_add(vf_lo, f.jtptfex_vf_pos,   buf, offset_, 4)
-			pref_tree_add(vf_lo, f.jtptfex_vf_vel,   buf, offset_, 4)
-			pref_tree_add(vf_lo, f.jtptfex_vf_accel, buf, offset_, 4)
-			offset_ = offset_ + 4
-
-			-- append high bit flags to bitfield parent item
-			vf_lo:append_text(_F(" (%s)", stringify_flagbits(valid_fields, valid_field_type_str)))
-
-			-- time
-			pref_tree_add(group_tree, f.jtptfex_time, buf, offset_, 4)
-			offset_ = offset_ + 4
-
-			-- positions
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
-				"Positions", "J%d")
-
-			-- velocities
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
-				"Velocities", "J%d")
-
-			-- accelerations
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
-				"Accelerations", "J%d")
-
-			-- correct length of TreeItem
-			group_tree:set_len(offset_ - group_tree_start)
-
-			i = i + 1
-
-		until (i == valid_groups)
-
-		-- nr of bytes we consumed
-		local tlen = offset_ - offset
-		body_tree:set_len(tlen)
-		return (tlen)
-	end
-
-
-
-	--
 	-- JOINT_FEEDBACK
 	--
 	local function disf_joint_feedback(buf, pkt, tree, offset)
@@ -861,80 +783,6 @@ do
 		-- accelerations
 		offset_ = offset_ + disf_float_array(buf, pkt, body_tree, offset_, 10,
 			"Accelerations", "J%d")
-
-		-- nr of bytes we consumed
-		local tlen = offset_ - offset
-		body_tree:set_len(tlen)
-		return (tlen)
-	end
-
-
-
-	--
-	-- JOINT_FEEDBACK_EX
-	--
-	local function disf_joint_feedback_ex(buf, pkt, tree, offset)
-		--
-		local offset_ = offset
-		local lt = tree
-
-		-- header
-		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
-
-		-- body
-		local body_tree = lt:add(buf(offset_, 0), "Body")
-
-		-- number of groups
-		pref_tree_add(body_tree, f.jfex_numgroups, buf, offset_, 4)
-		local num_groups = pref_uint(buf, offset_, 4)
-		offset_ = offset_ + 4
-
-		local i = 0
-		repeat
-			--
-			local group_tree_start = offset_
-			local group_tree = body_tree:add(buf(offset_, 0), _F("Group %d", i))
-
-			-- group ID
-			pref_tree_add(group_tree, f.jfex_robotid, buf, offset_, 4)
-			offset_ = offset_ + 4
-
-			-- valid_fields
-			local valid_fields = pref_uint(buf, offset_, 4)
-			local vf_lo = pref_tree_add(group_tree, f.jfex_vf, buf, offset_, 4)
-
-			-- bitfield
-			pref_tree_add(vf_lo, f.jfex_vf_time,  buf, offset_, 4)
-			pref_tree_add(vf_lo, f.jfex_vf_pos,   buf, offset_, 4)
-			pref_tree_add(vf_lo, f.jfex_vf_vel,   buf, offset_, 4)
-			pref_tree_add(vf_lo, f.jfex_vf_accel, buf, offset_, 4)
-			offset_ = offset_ + 4
-
-			-- append high bit flags to bitfield parent item
-			vf_lo:append_text(_F(" (%s)", stringify_flagbits(valid_fields, valid_field_type_str)))
-
-			-- time
-			pref_tree_add(group_tree, f.jfex_time, buf, offset_, 4)
-			offset_ = offset_ + 4
-
-			-- positions
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
-				"Positions", "J%d")
-
-			-- velocities
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
-				"Velocities", "J%d")
-
-			-- accelerations
-			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
-				"Accelerations", "J%d")
-
-			-- correct length of TreeItem
-			group_tree:set_len(offset_ - group_tree_start)
-
-			i = i + 1
-
-		until (i == num_groups)
 
 		-- nr of bytes we consumed
 		local tlen = offset_ - offset
@@ -1029,6 +877,158 @@ do
 
 
 	--
+	-- MOTO_JOINT_TRAJ_PT_FULL_EX
+	--
+	local function disf_moto_joint_traj_point_full_ex(buf, pkt, tree, offset)
+		--
+		local offset_ = offset
+		local lt = tree
+
+		-- header
+		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
+
+		-- body
+		local body_tree = lt:add(buf(offset_, 0), "Body")
+
+		-- number of valid groups
+		local valid_groups = pref_uint(buf, offset_, 4)
+		pref_tree_add(body_tree, f.mmjtptfex_validgroups, buf, offset_, 4)
+		offset_ = offset_ + 4
+
+		-- sequence number
+		pref_tree_add(body_tree, f.mmjtptfex_seq_nr, buf, offset_, 4)
+		offset_ = offset_ + 4
+
+		local i = 0
+		repeat
+			--
+			local group_tree_start = offset_
+			local group_tree = body_tree:add(buf(offset_, 0), _F("Group %d", i))
+
+			-- robot id
+			pref_tree_add(group_tree, f.mmjtptfex_robotid, buf, offset_, 4)
+			offset_ = offset_ + 4
+
+			-- valid_fields
+			local valid_fields = pref_uint(buf, offset_, 4)
+			local vf_lo = pref_tree_add(group_tree, f.mmjtptfex_vf, buf, offset_, 4)
+
+			-- bitfield
+			pref_tree_add(vf_lo, f.mmjtptfex_vf_time,  buf, offset_, 4)
+			pref_tree_add(vf_lo, f.mmjtptfex_vf_pos,   buf, offset_, 4)
+			pref_tree_add(vf_lo, f.mmjtptfex_vf_vel,   buf, offset_, 4)
+			pref_tree_add(vf_lo, f.mmjtptfex_vf_accel, buf, offset_, 4)
+			offset_ = offset_ + 4
+
+			-- append high bit flags to bitfield parent item
+			vf_lo:append_text(_F(" (%s)", stringify_flagbits(valid_fields, valid_field_type_str)))
+
+			-- time
+			pref_tree_add(group_tree, f.mmjtptfex_time, buf, offset_, 4)
+			offset_ = offset_ + 4
+
+			-- positions
+			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
+				"Positions", "J%d")
+
+			-- velocities
+			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
+				"Velocities", "J%d")
+
+			-- accelerations
+			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
+				"Accelerations", "J%d")
+
+			-- correct length of TreeItem
+			group_tree:set_len(offset_ - group_tree_start)
+
+			i = i + 1
+
+		until (i == valid_groups)
+
+		-- nr of bytes we consumed
+		local tlen = offset_ - offset
+		body_tree:set_len(tlen)
+		return (tlen)
+	end
+
+
+
+	--
+	-- MOTO_JOINT_FEEDBACK_EX
+	--
+	local function disf_moto_joint_feedback_ex(buf, pkt, tree, offset)
+		--
+		local offset_ = offset
+		local lt = tree
+
+		-- header
+		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
+
+		-- body
+		local body_tree = lt:add(buf(offset_, 0), "Body")
+
+		-- number of groups
+		pref_tree_add(body_tree, f.mmjfex_numgroups, buf, offset_, 4)
+		local num_groups = pref_uint(buf, offset_, 4)
+		offset_ = offset_ + 4
+
+		local i = 0
+		repeat
+			--
+			local group_tree_start = offset_
+			local group_tree = body_tree:add(buf(offset_, 0), _F("Group %d", i))
+
+			-- group ID
+			pref_tree_add(group_tree, f.mmjfex_robotid, buf, offset_, 4)
+			offset_ = offset_ + 4
+
+			-- valid_fields
+			local valid_fields = pref_uint(buf, offset_, 4)
+			local vf_lo = pref_tree_add(group_tree, f.mmjfex_vf, buf, offset_, 4)
+
+			-- bitfield
+			pref_tree_add(vf_lo, f.mmjfex_vf_time,  buf, offset_, 4)
+			pref_tree_add(vf_lo, f.mmjfex_vf_pos,   buf, offset_, 4)
+			pref_tree_add(vf_lo, f.mmjfex_vf_vel,   buf, offset_, 4)
+			pref_tree_add(vf_lo, f.mmjfex_vf_accel, buf, offset_, 4)
+			offset_ = offset_ + 4
+
+			-- append high bit flags to bitfield parent item
+			vf_lo:append_text(_F(" (%s)", stringify_flagbits(valid_fields, valid_field_type_str)))
+
+			-- time
+			pref_tree_add(group_tree, f.mmjfex_time, buf, offset_, 4)
+			offset_ = offset_ + 4
+
+			-- positions
+			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
+				"Positions", "J%d")
+
+			-- velocities
+			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
+				"Velocities", "J%d")
+
+			-- accelerations
+			offset_ = offset_ + disf_float_array(buf, pkt, group_tree, offset_, 10,
+				"Accelerations", "J%d")
+
+			-- correct length of TreeItem
+			group_tree:set_len(offset_ - group_tree_start)
+
+			i = i + 1
+
+		until (i == num_groups)
+
+		-- nr of bytes we consumed
+		local tlen = offset_ - offset
+		body_tree:set_len(tlen)
+		return (tlen)
+	end
+
+
+
+	--
 	-- Default parser
 	--
 	local function disf_default(buf, pkt, tree, offset)
@@ -1057,17 +1057,17 @@ do
 	-- message type -> dissection function map
 	--
 	local map_msg_type_to_disf = {
-		[MSG_PING                 ] = disf_ping,
-		[MSG_JOINT_POSITION       ] = disf_joint_position,
-		[MSG_JOINT_TRAJ_PT        ] = disf_joint_traj_point,
-		[MSG_STATUS               ] = disf_status,
-		[MSG_JOINT_TRAJ_PT_FULL   ] = disf_joint_traj_point_full,
-		[MSG_JOINT_TRAJ_PT_FULL_EX] = disf_joint_traj_point_full_ex,
-		[MSG_JOINT_FEEDBACK       ] = disf_joint_feedback,
-		[MSG_JOINT_FEEDBACK_EX    ] = disf_joint_feedback_ex,
+		[MSG_PING                      ] = disf_ping,
+		[MSG_JOINT_POSITION            ] = disf_joint_position,
+		[MSG_JOINT_TRAJ_PT             ] = disf_joint_traj_point,
+		[MSG_STATUS                    ] = disf_status,
+		[MSG_JOINT_TRAJ_PT_FULL        ] = disf_joint_traj_point_full,
+		[MSG_JOINT_FEEDBACK            ] = disf_joint_feedback,
 
-		[MSG_MOTO_MOTION_CTRL     ] = disf_motoman_ctrl,
-		[MSG_MOTO_MOTION_REPLY    ] = disf_motoman_reply
+		[MSG_MOTO_MOTION_CTRL          ] = disf_motoman_ctrl,
+		[MSG_MOTO_MOTION_REPLY         ] = disf_motoman_reply,
+		[MSG_MOTO_JOINT_TRAJ_PT_FULL_EX] = disf_moto_joint_traj_point_full_ex,
+		[MSG_MOTO_JOINT_FEEDBACK_EX    ] = disf_moto_joint_feedback_ex,
 	}
 
 
