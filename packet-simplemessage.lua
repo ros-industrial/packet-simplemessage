@@ -39,7 +39,7 @@ do
 	--
 	-- constants
 	--
-	local DISSECTOR_VERSION              = "0.1.5"
+	local DISSECTOR_VERSION              = "0.1.6"
 
 	local MIN_PKT_LEN                    = 44
 

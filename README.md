@@ -1,13 +1,13 @@
 # packet-simplemessage
-v0.1.5
+v0.1.6
 
 
 ## Overview
 
-This is a Wireshark Lua dissector for the ROS Industrial SimpleMessage
+This is a Wireshark Lua dissector for the ROS-Industrial SimpleMessage
 protocol. For more information on the protocol, see [simple_message][]. The
 current version of the dissector supports only the Groovy version of
-SimpleMessage (which is also used in Hydro).
+SimpleMessage (which is also used in Hydro and Indigo).
 
 Packet types dissected:
 
@@ -17,15 +17,15 @@ Packet types dissected:
  * Status
  * Joint Trajectory Point Full
  * Joint Feedback
- * Joint Trajectory Point Full Extended
- * Joint Feedback Extended
  * Motoman Motion Control
  * Motoman Motion Reply
+ * Motoman Joint Trajectory Point Full Extended
+ * Motoman Joint Feedback Extended
 
 Tested on (but should work on other versions and OS as well):
 
  * Windows
-   * Wireshark 1.9.0-SVN-46273 
+   * Wireshark 1.9.0-SVN-46273
    * Wireshark 1.11.0-SVN-50116
  * Linux
    * Wireshark 1.11.0+svn50816
