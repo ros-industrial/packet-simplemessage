@@ -43,6 +43,11 @@ do
 
 	local MIN_PKT_LEN                    = 44
 
+	local SMTCP_PORT_TRAJ_RELAY          = 11000
+	local SMTCP_PORT_STATE_REPORTER      = 11002
+	local SMTCP_PORT_MOTO_TRAJ_RELAY     = 50240
+	local SMTCP_PORT_MOTO_STATE_REPORTER = 50241
+
 	local MSG_PING                       = 0x01
 	local MSG_JOINT_POSITION             = 0x0A
 	local MSG_JOINT_TRAJ_PT              = 0x0B
@@ -1288,12 +1293,12 @@ do
 	-- TODO: make ports to register dissector on configurable via preferences
 
 	-- default ROS Industrial joint trajectory streaming port
-	tcp_dissector_table:add(11000, p_simplemsg_tcp)
+	tcp_dissector_table:add(SMTCP_PORT_TRAJ_RELAY, p_simplemsg_tcp)
 	-- default ROS Industrial robot state port
-	tcp_dissector_table:add(11002, p_simplemsg_tcp)
+	tcp_dissector_table:add(SMTCP_PORT_STATE_REPORTER, p_simplemsg_tcp)
 	-- MotoROS joint trajectory streaming port
-	tcp_dissector_table:add(50240, p_simplemsg_tcp)
+	tcp_dissector_table:add(SMTCP_PORT_MOTO_TRAJ_RELAY, p_simplemsg_tcp)
 	-- MotoROS robot state port
-	tcp_dissector_table:add(50241, p_simplemsg_tcp)
+	tcp_dissector_table:add(SMTCP_PORT_MOTO_STATE_REPORTER, p_simplemsg_tcp)
 
 end
