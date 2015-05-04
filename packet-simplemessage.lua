@@ -304,6 +304,7 @@ do
 	local p_simplemsg_tcp = Proto("SIMPLEMESSAGE", "ROS Industrial SimpleMessage")
 
 	-- preferences
+	p_simplemsg_tcp.prefs["version_txt"]            = Pref.statictext(_F("Dissector version: v%s", DISSECTOR_VERSION), "Shows dissector information.")
 	p_simplemsg_tcp.prefs["target_be"]              = Pref.bool("Target is big-endian"  , true, "Is the target using big-endian transfers?")
 	p_simplemsg_tcp.prefs["autodetect_endianness"]  = Pref.bool("Auto-detect endianness", true, "Should endianness of data be auto-detected?")
 	p_simplemsg_tcp.prefs["display_invalid_fields"] = Pref.bool("Show invalid fields"   , true, "Should values for invalid fields be displayed (in messages with a 'valid fields' field)?")
