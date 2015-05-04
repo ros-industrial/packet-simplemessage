@@ -195,6 +195,12 @@ do
 		[MSG_MOTO_MOTION_REPLY         ] = "Motoman Motion Reply",
 		[MSG_MOTO_JOINT_TRAJ_PT_FULL_EX] = "Motoman Joint Trajectory Point Full Extended",
 		[MSG_MOTO_JOINT_FEEDBACK_EX    ] = "Motoman Joint Feedback Extended",
+		-- facilitate dissection of legacy captures (before renumbering of
+		-- Motoman msgs)
+		-- TODO: this will need to be removed once IDs 0x10 and 0x11 are
+		--       assigned to other msgs
+		[0x10                          ] = "Motoman Joint Traj. Pt Full Ext. (OLD ID)",
+		[0x11                          ] = "Motoman Joint Feedback Ext. (OLD ID)",
 	}
 
 	local comm_types_str = {
@@ -1143,6 +1149,12 @@ do
 		[MSG_MOTO_MOTION_REPLY         ] = disf_motoman_reply,
 		[MSG_MOTO_JOINT_TRAJ_PT_FULL_EX] = disf_moto_joint_traj_point_full_ex,
 		[MSG_MOTO_JOINT_FEEDBACK_EX    ] = disf_moto_joint_feedback_ex,
+		-- facilitate dissection of legacy captures (before renumbering of
+		-- Motoman msgs)
+		-- TODO: this will need to be removed once IDs 0x10 and 0x11 are
+		--       assigned to other msgs
+		[0x10                          ] = disf_moto_joint_traj_point_full_ex,
+		[0x11                          ] = disf_moto_joint_feedback_ex,
 	}
 
 
