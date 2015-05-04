@@ -37,6 +37,11 @@ Tested on (but should work on other versions and OS as well):
 Make sure the version of Wireshark you have installed was compiled with Lua
 support (see [wireshark.org/Lua][]).
 
+If you're not interested in tracking development on the main branch, download
+the latest release from the [GitHub Releases][] page and extract the archive
+somewhere temporarily (Windows users will likely want to download the zip
+archive).
+
 ### Linux (per user)
 
     cd $PACKET_SIMPLEMESSAGE
@@ -59,3 +64,4 @@ Please use the [GitHub issue tracker][].
 [simple_message]: http://wiki.ros.org/simple_message
 [wireshark.org/Lua]: http://wiki.wireshark.org/Lua
 [GitHub issue tracker]: https://github.com/ros-industrial/packet-simplemessage/issues
+[GitHub Releases]: https://github.com/ros-industrial/packet-simplemessage/releases
