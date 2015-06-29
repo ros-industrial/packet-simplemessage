@@ -1,5 +1,5 @@
 --[[
-  Routines for ROS Industrial SimpleMessage dissection
+  Routines for ROS-Industrial SimpleMessage dissection
   Copyright (c) 2013-2015, G.A. vd. Hoorn, TU Delft Robotics Institute
   All rights reserved.
 
@@ -19,7 +19,7 @@
 
   ---
 
-  Wireshark dissector in Lua for the ROS Industrial SimpleMessage protocol.
+  Wireshark dissector in Lua for the ROS-Industrial SimpleMessage protocol.
   For more information on the protocol, see [1].
 
   Written for the 'groovy' version of the SimpleMessage protocol.
@@ -301,7 +301,7 @@ do
 	--
 	-- Protocol object creation and setup
 	--
-	local p_simplemsg_tcp = Proto("SIMPLEMESSAGE", "ROS Industrial SimpleMessage")
+	local p_simplemsg_tcp = Proto("SIMPLEMESSAGE", "ROS-Industrial SimpleMessage")
 
 	-- preferences
 	p_simplemsg_tcp.prefs["version_txt"]            = Pref.statictext(_F("Dissector version: v%s", DISSECTOR_VERSION), "Shows dissector information.")
@@ -1305,9 +1305,9 @@ do
 
 	-- TODO: make ports to register dissector on configurable via preferences
 
-	-- default ROS Industrial joint trajectory streaming port
+	-- default ROS-Industrial joint trajectory streaming port
 	tcp_dissector_table:add(SMTCP_PORT_TRAJ_RELAY, p_simplemsg_tcp)
-	-- default ROS Industrial robot state port
+	-- default ROS-Industrial robot state port
 	tcp_dissector_table:add(SMTCP_PORT_STATE_REPORTER, p_simplemsg_tcp)
 	-- MotoROS joint trajectory streaming port
 	tcp_dissector_table:add(SMTCP_PORT_MOTO_TRAJ_RELAY, p_simplemsg_tcp)
