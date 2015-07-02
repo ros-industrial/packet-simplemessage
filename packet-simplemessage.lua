@@ -43,11 +43,6 @@ do
 
 	local MIN_PKT_LEN                    = 44
 
-	local SMTCP_PORT_TRAJ_RELAY          = 11000
-	local SMTCP_PORT_STATE_REPORTER      = 11002
-	local SMTCP_PORT_MOTO_TRAJ_RELAY     = 50240
-	local SMTCP_PORT_MOTO_STATE_REPORTER = 50241
-
 	local MSG_PING                       = 0x01
 	local MSG_JOINT_POSITION             = 0x0A
 	local MSG_JOINT_TRAJ_PT              = 0x0B
@@ -308,6 +303,7 @@ do
 	p_simplemsg_tcp.prefs["target_be"]              = Pref.bool("Target is big-endian"  , true, "Is the target using big-endian transfers?")
 	p_simplemsg_tcp.prefs["autodetect_endianness"]  = Pref.bool("Auto-detect endianness", true, "Should endianness of data be auto-detected?")
 	p_simplemsg_tcp.prefs["display_invalid_fields"] = Pref.bool("Show invalid fields"   , true, "Should values for invalid fields be displayed (in messages with a 'valid fields' field)?")
+	p_simplemsg_tcp.prefs["tcp_ports"             ] = Pref.range("TCP Ports", "11000,11002,50240,50241", "TCP ports the dissector should be registered for (default: 11000 (traj. relay), 11002 (state), 50240 (MotoROS traj. relay) and 50241 (MotorROS state)).", 65535)
 
 
 
@@ -1291,27 +1287,10 @@ do
 		config.target_be              = p_simplemsg_tcp.prefs["target_be"]
 		config.autodetect_endianness  = p_simplemsg_tcp.prefs["autodetect_endianness"]
 		config.display_invalid_fields = p_simplemsg_tcp.prefs["display_invalid_fields"]
+
+		-- register dissector on configured ports
+		local tcp_dissector_table = DissectorTable.get("tcp.port")
+		tcp_dissector_table:add(p_simplemsg_tcp.prefs.tcp_ports, p_simplemsg_tcp)
 	end
-
-
-
-
-
-
-	--
-	-- register dissector
-	--
-	local tcp_dissector_table = DissectorTable.get("tcp.port")
-
-	-- TODO: make ports to register dissector on configurable via preferences
-
-	-- default ROS-Industrial joint trajectory streaming port
-	tcp_dissector_table:add(SMTCP_PORT_TRAJ_RELAY, p_simplemsg_tcp)
-	-- default ROS-Industrial robot state port
-	tcp_dissector_table:add(SMTCP_PORT_STATE_REPORTER, p_simplemsg_tcp)
-	-- MotoROS joint trajectory streaming port
-	tcp_dissector_table:add(SMTCP_PORT_MOTO_TRAJ_RELAY, p_simplemsg_tcp)
-	-- MotoROS robot state port
-	tcp_dissector_table:add(SMTCP_PORT_MOTO_STATE_REPORTER, p_simplemsg_tcp)
 
 end
