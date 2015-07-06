@@ -943,8 +943,7 @@ do
 		pref_tree_add(body_tree, f.mmjtptfex_seq_nr, buf, offset_, 4)
 		offset_ = offset_ + 4
 
-		local i = 0
-		repeat
+		for i = 0, (valid_groups - 1) do
 			--
 			local group_tree_start = offset_
 			local group_tree = body_tree:add(buf(offset_, 0), _F("Group %d", i))
@@ -1002,10 +1001,7 @@ do
 
 			-- correct length of TreeItem
 			group_tree:set_len(offset_ - group_tree_start)
-
-			i = i + 1
-
-		until (i == valid_groups)
+		end
 
 		-- nr of bytes we consumed
 		local tlen = offset_ - offset
@@ -1034,8 +1030,7 @@ do
 		local num_groups = pref_uint(buf, offset_, 4)
 		offset_ = offset_ + 4
 
-		local i = 0
-		repeat
+		for i = 0, (num_groups - 1) do
 			--
 			local group_tree_start = offset_
 			local group_tree = body_tree:add(buf(offset_, 0), _F("Group %d", i))
@@ -1093,10 +1088,7 @@ do
 
 			-- correct length of TreeItem
 			group_tree:set_len(offset_ - group_tree_start)
-
-			i = i + 1
-
-		until (i == num_groups)
+		end
 
 		-- nr of bytes we consumed
 		local tlen = offset_ - offset
