@@ -571,13 +571,10 @@ do
 
 		-- sequence number
 		local seq_nr = pref_int(buf, offset_, 4)
-		local seq_field = pref_tree_add(body_tree, f.jp_seq_nr, buf,
-			offset_, 4)
+		local seq_field = pref_tree_add(body_tree, f.jp_seq_nr, buf, offset_, 4)
 		offset_ = offset_ + 4
-
 		if (seq_nr < 0) then
-			seq_field:append_text(_F(": %s", str_or_none(special_seq_nr_str,
-				seq_nr)))
+			seq_field:set_text(_F("Sequence Number: %s (%d)", str_or_none(special_seq_nr_str, seq_nr), seq_nr))
 		end
 
 		-- joint data
@@ -608,14 +605,10 @@ do
 
 		-- sequence number
 		local seq_nr = pref_int(buf, offset_, 4)
-		local seq_field = pref_tree_add(body_tree, f.jtpt_seq_nr, buf,
-			offset_, 4)
+		local seq_field = pref_tree_add(body_tree, f.jtpt_seq_nr, buf, offset_, 4)
 		offset_ = offset_ + 4
-
 		if (seq_nr < 0) then
-			-- overwrite text
-			seq_field:set_text(_F("Sequence Number: %s (%d)", str_or_none(
-				special_seq_nr_str, seq_nr), seq_nr))
+			seq_field:set_text(_F("Sequence Number: %s (%d)", str_or_none(special_seq_nr_str, seq_nr), seq_nr))
 		end
 
 		-- joint data
@@ -707,8 +700,12 @@ do
 		offset_ = offset_ + 4
 
 		-- sequence number
-		pref_tree_add(body_tree, f.jtptf_seq_nr, buf, offset_, 4)
+		local seq_nr = pref_int(buf, offset_, 4)
+		local seq_field = pref_tree_add(body_tree, f.jtptf_seq_nr, buf, offset_, 4)
 		offset_ = offset_ + 4
+		if (seq_nr < 0) then
+			seq_field:set_text(_F("Sequence Number: %s (%d)", str_or_none(special_seq_nr_str, seq_nr), seq_nr))
+		end
 
 		-- valid_fields
 		local valid_fields = pref_uint(buf, offset_, 4)
