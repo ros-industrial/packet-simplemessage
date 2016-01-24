@@ -69,6 +69,7 @@ do
 	local REPLY_FAILURE                  = 0x02
 
 	local START_TRAJECTORY_DOWNLOAD      = -1
+	-- NOTE: typo is intentional (see simple_message/joint_traj_pt(_full).h)
 	local START_TRAJECOTRY_STREAMING     = -2
 	local END_TRAJECTORY                 = -3
 	local STOP_TRAJECTORY                = -4
