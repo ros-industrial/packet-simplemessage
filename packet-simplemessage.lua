@@ -568,6 +568,7 @@ do
 
 		-- body
 		local body_tree = lt:add(buf(offset_, 0), "Body")
+		local body_offset = offset_
 
 		-- sequence number
 		local seq_nr = pref_int(buf, offset_, 4)
@@ -582,7 +583,7 @@ do
 			"Joint Data", "J%d")
 
 		-- nr of bytes we consumed
-		local tlen = offset_ - offset
+		local tlen = offset_ - body_offset
 		body_tree:set_len(tlen)
 		return (tlen)
 	end
@@ -602,6 +603,7 @@ do
 
 		-- body
 		local body_tree = lt:add(buf(offset_, 0), "Body")
+		local body_offset = offset_
 
 		-- sequence number
 		local seq_nr = pref_int(buf, offset_, 4)
@@ -624,7 +626,7 @@ do
 		offset_ = offset_ + 4
 
 		-- nr of bytes we consumed
-		local tlen = offset_ - offset
+		local tlen = offset_ - body_offset
 		body_tree:set_len(tlen)
 		return (tlen)
 	end
@@ -644,6 +646,7 @@ do
 
 		-- body
 		local body_tree = lt:add(buf(offset_, 0), "Body")
+		local body_offset = offset_
 
 		-- drives powered
 		pref_tree_add(body_tree, f.rs_drv_pwd, buf, offset_, 4)
@@ -674,7 +677,7 @@ do
 		offset_ = offset_ + 4
 
 		-- nr of bytes we consumed
-		local tlen = offset_ - offset
+		local tlen = offset_ - body_offset
 		body_tree:set_len(tlen)
 		return (tlen)
 	end
@@ -694,6 +697,7 @@ do
 
 		-- body
 		local body_tree = lt:add(buf(offset_, 0), "Body")
+		local body_offset = offset_
 
 		-- robot id
 		pref_tree_add(body_tree, f.jtptf_robotid, buf, offset_, 4)
@@ -754,7 +758,7 @@ do
 		end
 
 		-- nr of bytes we consumed
-		local tlen = offset_ - offset
+		local tlen = offset_ - body_offset
 		body_tree:set_len(tlen)
 		return (tlen)
 	end
@@ -774,6 +778,7 @@ do
 
 		-- body
 		local body_tree = lt:add(buf(offset_, 0), "Body")
+		local body_offset = offset_
 
 		-- robot id
 		pref_tree_add(body_tree, f.jf_robotid, buf, offset_, 4)
@@ -826,7 +831,7 @@ do
 		end
 
 		-- nr of bytes we consumed
-		local tlen = offset_ - offset
+		local tlen = offset_ - body_offset
 		body_tree:set_len(tlen)
 		return (tlen)
 	end
@@ -846,6 +851,7 @@ do
 
 		-- body
 		local body_tree = lt:add(buf(offset_, 0), "Body")
+		local body_offset = offset_
 
 		-- robot id
 		pref_tree_add(body_tree, f.mmc_robotid, buf, offset_, 4)
@@ -864,7 +870,7 @@ do
 			"Data (reserved)", "J%d")
 
 		-- nr of bytes we consumed
-		local tlen = offset_ - offset
+		local tlen = offset_ - body_offset
 		body_tree:set_len(tlen)
 		return (tlen)
 	end
@@ -884,6 +890,7 @@ do
 
 		-- body
 		local body_tree = lt:add(buf(offset_, 0), "Body")
+		local body_offset = offset_
 
 		-- robot id
 		pref_tree_add(body_tree, f.mmr_robotid, buf, offset_, 4)
@@ -910,7 +917,7 @@ do
 			"Data (reserved)", "J%d")
 
 		-- nr of bytes we consumed
-		local tlen = offset_ - offset
+		local tlen = offset_ - body_offset
 		body_tree:set_len(tlen)
 		return (tlen)
 	end
@@ -930,6 +937,7 @@ do
 
 		-- body
 		local body_tree = lt:add(buf(offset_, 0), "Body")
+		local body_offset = offset_
 
 		-- number of valid groups
 		local valid_groups = pref_uint(buf, offset_, 4)
@@ -1001,7 +1009,7 @@ do
 		end
 
 		-- nr of bytes we consumed
-		local tlen = offset_ - offset
+		local tlen = offset_ - body_offset
 		body_tree:set_len(tlen)
 		return (tlen)
 	end
@@ -1021,6 +1029,7 @@ do
 
 		-- body
 		local body_tree = lt:add(buf(offset_, 0), "Body")
+		local body_offset = offset_
 
 		-- number of groups
 		pref_tree_add(body_tree, f.mmjfex_numgroups, buf, offset_, 4)
@@ -1088,7 +1097,7 @@ do
 		end
 
 		-- nr of bytes we consumed
-		local tlen = offset_ - offset
+		local tlen = offset_ - body_offset
 		body_tree:set_len(tlen)
 		return (tlen)
 	end
