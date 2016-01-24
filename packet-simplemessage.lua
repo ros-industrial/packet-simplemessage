@@ -192,9 +192,9 @@ do
 		[MSG_MOTO_JOINT_TRAJ_PT_FULL_EX] = "Motoman Joint Trajectory Point Full Extended",
 		[MSG_MOTO_JOINT_FEEDBACK_EX    ] = "Motoman Joint Feedback Extended",
 		-- facilitate dissection of legacy captures (before renumbering of
-		-- Motoman msgs)
+		-- Motoman msgs). See packet-simplemessage issue 12.
 		-- TODO: this will need to be removed once IDs 0x10 and 0x11 are
-		--       assigned to other msgs
+		--       assigned to other msgs.
 		[0x10                          ] = "Motoman Joint Traj. Pt Full Ext. (OLD ID)",
 		[0x11                          ] = "Motoman Joint Feedback Ext. (OLD ID)",
 	}
