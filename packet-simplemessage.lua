@@ -1,6 +1,6 @@
 --[[
   Routines for ROS-Industrial SimpleMessage dissection
-  Copyright (c) 2013-2015, G.A. vd. Hoorn, TU Delft Robotics Institute
+  Copyright (c) 2013-2016, G.A. vd. Hoorn, TU Delft Robotics Institute
   All rights reserved.
 
   This program is free software; you can redistribute it and/or
