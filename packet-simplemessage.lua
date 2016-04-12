@@ -1205,6 +1205,16 @@ do
 		-- either we resume dissecting, or we start fresh
 		local offset = pkt.desegment_offset or 0
 
+		-- make sure we have at least four bytes, so we can deserialise
+		-- the pkt_length field. Assume all traffic on our registered
+		-- ports is for us, and make Wireshark reassemble enough frames
+		-- for us.
+		if (buf_len < 4) then
+			pkt.desegment_len = 4 - buf_len
+			pkt.desegment_offset = offset
+			return
+		end
+
 		-- keep dissecting as long as there are bytes available
 		while true do
 			-- TODO: this probably isn't too good an idea if there are streams
