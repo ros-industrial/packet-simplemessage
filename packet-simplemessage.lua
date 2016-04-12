@@ -158,6 +158,9 @@ do
 		display_invalid_fields = true
 	}
 
+	-- register version info with wireshark
+	set_plugin_info({version = DISSECTOR_VERSION})
+
 
 
 
