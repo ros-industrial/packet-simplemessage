@@ -35,6 +35,8 @@
   [2] https://github.com/ros-industrial/packet-simplemessage/issues
 ]]
 do
+	-- feature detection
+	assert (set_plugin_info and Pref.range, "This dissector (ROS-Industrial SimpleMessage) requires Wireshark 2 or newer.")
 
 	--
 	-- constants
