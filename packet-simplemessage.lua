@@ -24,8 +24,6 @@
 
   Written for the 'groovy' version of the SimpleMessage protocol.
 
-  Tested on Wireshark 1.9.0-SVN-46273 on Windows.
-
   Known issues and open feature requests, see [2].
 
 

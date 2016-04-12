@@ -25,11 +25,9 @@ Packet types dissected:
 Tested on (but should work on other versions and OS as well):
 
  * Windows
-   * Wireshark 1.9.0-SVN-46273
-   * Wireshark 1.11.0-SVN-50116
+   * Wireshark 2.0.2
  * Linux
-   * Wireshark 1.11.0+svn50816
-   * Wireshark 1.12.0-unknown-unknown
+   * Wireshark 2.0.2
 
 
 ## Installation
