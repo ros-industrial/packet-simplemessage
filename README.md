@@ -9,6 +9,8 @@ protocol. For more information on the protocol, see [simple_message][]. The
 current version of the dissector supports only the Groovy version of
 SimpleMessage (which is also used in Hydro and Indigo).
 
+![Screenshot of Wireshark dissecting the sample capture](https://github.com/ros-industrial/packet-simplemessage/blob/master/sshot.png)
+
 Packet types dissected:
 
  * Ping
