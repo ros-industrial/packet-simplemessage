@@ -1,5 +1,5 @@
 # packet-simplemessage
-v0.1.10
+v0.1.11
 
 
 ## Overview
