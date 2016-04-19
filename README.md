@@ -21,6 +21,10 @@ Packet types dissected:
  * Joint Feedback
  * Motoman Motion Control
  * Motoman Motion Reply
+ * Motoman Read Single IO
+ * Motoman Read Single IO Reply
+ * Motoman Write Single IO
+ * Motoman Write Single IO Reply
  * Motoman Joint Trajectory Point Full Extended
  * Motoman Joint Feedback Extended
 
