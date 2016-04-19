@@ -56,6 +56,10 @@ do
 	local MSG_MOTO_BEGIN                 = 0x7D0
 	local MSG_MOTO_MOTION_CTRL           = 0x7D1
 	local MSG_MOTO_MOTION_REPLY          = 0x7D2
+	local MSG_MOTO_READ_SINGLE_IO        = 0x7D3
+	local MSG_MOTO_READ_SINGLE_IO_REPLY  = 0x7D4
+	local MSG_MOTO_WRITE_SINGLE_IO       = 0x7D5
+	local MSG_MOTO_WRITE_SINGLE_IO_REPLY = 0x7D6
 	local MSG_MOTO_JOINT_TRAJ_PT_FULL_EX = 0x7E0
 	local MSG_MOTO_JOINT_FEEDBACK_EX     = 0x7E1
 
@@ -192,6 +196,10 @@ do
 		[MSG_MOTO_BEGIN                ] = "Motoman Msg Begin (BUG)",
 		[MSG_MOTO_MOTION_CTRL          ] = "Motoman Motion Ctrl",
 		[MSG_MOTO_MOTION_REPLY         ] = "Motoman Motion Reply",
+		[MSG_MOTO_READ_SINGLE_IO       ] = "Motoman Read Single IO",
+		[MSG_MOTO_READ_SINGLE_IO_REPLY ] = "Motoman Read Single IO Reply",
+		[MSG_MOTO_WRITE_SINGLE_IO      ] = "Motoman Write Single IO",
+		[MSG_MOTO_WRITE_SINGLE_IO_REPLY] = "Motoman Write Single IO Reply",
 		[MSG_MOTO_JOINT_TRAJ_PT_FULL_EX] = "Motoman Joint Trajectory Point Full Extended",
 		[MSG_MOTO_JOINT_FEEDBACK_EX    ] = "Motoman Joint Feedback Extended",
 		-- facilitate dissection of legacy captures (before renumbering of
@@ -372,6 +380,18 @@ do
 	f.mmr_command  = ProtoField.int32("simplemessage.mmr.command" , "Command"        , base.DEC, motoman_ctrl_cmd_str      , nil, "Command executed")
 	f.mmr_res      = ProtoField.int32("simplemessage.mmr.result"  , "Result"         , base.DEC, motoman_reply_results_str , nil, "Result of executing specified command")
 	f.mmr_subc     = ProtoField.int32("simplemessage.mmr.subcode" , "Subcode"        , base.DEC, motoman_reply_subcodes_str, nil, "More detailed result code")
+
+	-- protocol fields: MOTO_READ_SINGLE_IO
+	f.mrsio_address = ProtoField.uint32("simplemessage.mrsio.address", "Address", base.DEC, nil, nil, "Address of IO element to read")
+	-- protocol fields: MOTO_READ_SINGLE_IO_REPLY
+	f.mrsio_value    = ProtoField.uint32("simplemessage.mrsio.value"   , "Value"      , base.DEC, nil, nil, "Value of IO element")
+	f.mrsio_res_code = ProtoField.uint32("simplemessage.mrsio.res_code", "Result Code", base.DEC, nil, nil, "Result of IO operation")
+
+	-- protocol fields: MOTO_WRITE_SINGLE_IO
+	f.mwsio_address = ProtoField.uint32("simplemessage.mwsio.address", "Address", base.DEC, nil, nil, "Address of IO element to write to")
+	f.mwsio_value   = ProtoField.uint32("simplemessage.mwsio.value"  , "Value"  , base.DEC, nil, nil, "Value to write")
+	-- protocol fields: MOTO_WRITE_SINGLE_IO_REPLY
+	f.mwsio_res_code = ProtoField.uint32("simplemessage.mwsio.res_code", "Result Code", base.DEC, nil, nil, "Result of IO operation")
 
 	-- protocol fields: MOTOMAN_JOINT_TRAJ_PT_FULL_EX
 	f.mmjtptfex_validgroups = ProtoField.int32("simplemessage.mmjtptfex.vg"      , "Valid Groups"   , base.DEC, nil          , nil                          , "Number of valid groups")
@@ -929,6 +949,122 @@ do
 
 
 	--
+	-- MOTO_READ_SINGLE_IO
+	--
+	local function disf_moto_read_single_io(buf, pkt, tree, offset)
+		--
+		local offset_ = offset
+		local lt = tree
+
+		-- header
+		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
+
+		-- body
+		local body_tree = lt:add(buf(offset_, 0), "Body")
+		local body_offset = offset_
+
+		-- element address
+		pref_tree_add(body_tree, f.mrsio_address, buf, offset_, 4)
+		offset_ = offset_ + 4
+
+		-- nr of bytes we consumed
+		local tlen = offset_ - body_offset
+		body_tree:set_len(tlen)
+		return (tlen)
+	end
+
+
+
+	--
+	-- MOTO_READ_SINGLE_IO_REPLY
+	--
+	local function disf_moto_read_single_io_reply(buf, pkt, tree, offset)
+		--
+		local offset_ = offset
+		local lt = tree
+
+		-- header
+		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
+
+		-- body
+		local body_tree = lt:add(buf(offset_, 0), "Body")
+		local body_offset = offset_
+
+		-- element value
+		pref_tree_add(body_tree, f.mrsio_value, buf, offset_, 4)
+		offset_ = offset_ + 4
+
+		-- result code
+		pref_tree_add(body_tree, f.mrsio_res_code, buf, offset_, 4)
+		offset_ = offset_ + 4
+
+		-- nr of bytes we consumed
+		local tlen = offset_ - body_offset
+		body_tree:set_len(tlen)
+		return (tlen)
+	end
+
+
+
+	--
+	-- MOTO_WRITE_SINGLE_IO
+	--
+	local function disf_moto_write_single_io(buf, pkt, tree, offset)
+		--
+		local offset_ = offset
+		local lt = tree
+
+		-- header
+		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
+
+		-- body
+		local body_tree = lt:add(buf(offset_, 0), "Body")
+		local body_offset = offset_
+
+		-- address
+		pref_tree_add(body_tree, f.mwsio_address, buf, offset_, 4)
+		offset_ = offset_ + 4
+
+		-- value
+		pref_tree_add(body_tree, f.mwsio_value, buf, offset_, 4)
+		offset_ = offset_ + 4
+
+		-- nr of bytes we consumed
+		local tlen = offset_ - body_offset
+		body_tree:set_len(tlen)
+		return (tlen)
+	end
+
+
+
+	--
+	-- MOTO_WRITE_SINGLE_IO_REPLY
+	--
+	local function disf_moto_write_single_io_reply(buf, pkt, tree, offset)
+		--
+		local offset_ = offset
+		local lt = tree
+
+		-- header
+		offset_ = offset_ + disf_header(buf, pkt, tree, offset_)
+
+		-- body
+		local body_tree = lt:add(buf(offset_, 0), "Body")
+		local body_offset = offset_
+
+		-- result code
+		pref_tree_add(body_tree, f.mwsio_res_code, buf, offset_, 4)
+		offset_ = offset_ + 4
+
+		-- nr of bytes we consumed
+		local tlen = offset_ - body_offset
+		body_tree:set_len(tlen)
+		return (tlen)
+	end
+
+
+
+	--
 	-- MOTO_JOINT_TRAJ_PT_FULL_EX
 	--
 	local function disf_moto_joint_traj_point_full_ex(buf, pkt, tree, offset)
@@ -1146,6 +1282,10 @@ do
 
 		[MSG_MOTO_MOTION_CTRL          ] = disf_motoman_ctrl,
 		[MSG_MOTO_MOTION_REPLY         ] = disf_motoman_reply,
+		[MSG_MOTO_READ_SINGLE_IO       ] = disf_moto_read_single_io,
+		[MSG_MOTO_READ_SINGLE_IO_REPLY ] = disf_moto_read_single_io_reply,
+		[MSG_MOTO_WRITE_SINGLE_IO      ] = disf_moto_write_single_io,
+		[MSG_MOTO_WRITE_SINGLE_IO_REPLY] = disf_moto_write_single_io_reply,
 		[MSG_MOTO_JOINT_TRAJ_PT_FULL_EX] = disf_moto_joint_traj_point_full_ex,
 		[MSG_MOTO_JOINT_FEEDBACK_EX    ] = disf_moto_joint_feedback_ex,
 		-- facilitate dissection of legacy captures (before renumbering of
