@@ -31,9 +31,9 @@ Packet types dissected:
 Tested on (but should work on other versions and OS as well):
 
  * Windows
-   * Wireshark 2.0.2
- * Linux
-   * Wireshark 2.0.2
+   * Wireshark 2.0.2 (from [wireshark.org/download][])
+ * Linux (Ubuntu)
+   * Wireshark 2.0.2 (from [ppa:wireshark-dev/stable][])
 
 
 ## Installation
@@ -69,3 +69,5 @@ Please use the [GitHub issue tracker][].
 [wireshark.org/Lua]: http://wiki.wireshark.org/Lua
 [GitHub issue tracker]: https://github.com/ros-industrial/packet-simplemessage/issues
 [GitHub Releases]: https://github.com/ros-industrial/packet-simplemessage/releases
+[ppa:wireshark-dev/stable]: https://launchpad.net/%7Ewireshark-dev/+archive/ubuntu/stable
+[wireshark.org/download]: https://wireshark.org/#download
