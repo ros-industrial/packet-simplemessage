@@ -48,11 +48,9 @@ archive).
 
 ### Linux (per user)
 
-```bash
-cd $PACKET_SIMPLEMESSAGE
-mkdir -p ~/.local/lib/wireshark/plugins
-cp packet-simplemessage.lua ~/.local/lib/wireshark/plugins
-```
+    cd $PACKET_SIMPLEMESSAGE
+    mkdir -p ~/.local/lib/wireshark/plugins
+    cp packet-simplemessage.lua ~/.local/lib/wireshark/plugins
 
 ### Windows (per user)
 
