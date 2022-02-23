@@ -60,8 +60,19 @@ do
 	local MSG_MOTO_READ_SINGLE_IO_REPLY  = 0x7D4
 	local MSG_MOTO_WRITE_SINGLE_IO       = 0x7D5
 	local MSG_MOTO_WRITE_SINGLE_IO_REPLY = 0x7D6
+	local MSG_MOTO_READ_GROUP_IO         = 0x7D7
+	local MSG_MOTO_READ_GROUP_IO_REPLY   = 0x7D8
+	local MSG_MOTO_WRITE_GROUP_IO        = 0x7D9
+	local MSG_MOTO_WRITE_GROUP_IO_REPLY  = 0x7DA
+
+	local MSG_MOTO_READ_MREGISTER        = 0x7DC
+	local MSG_MOTO_WRITE_MREGISTER       = 0x7DD
+
 	local MSG_MOTO_JOINT_TRAJ_PT_FULL_EX = 0x7E0
 	local MSG_MOTO_JOINT_FEEDBACK_EX     = 0x7E1
+	local MSG_MOTO_SELECT_TOOL           = 0x7E2
+
+	local MSG_MOTO_GET_DH_PARAMETERS     = 0x7E4
 
 	local COMM_INVALID                   = 0x00
 	local COMM_TOPIC                     = 0x01
@@ -213,8 +224,16 @@ do
 		[MSG_MOTO_READ_SINGLE_IO_REPLY ] = "Motoman Read Single IO Reply",
 		[MSG_MOTO_WRITE_SINGLE_IO      ] = "Motoman Write Single IO",
 		[MSG_MOTO_WRITE_SINGLE_IO_REPLY] = "Motoman Write Single IO Reply",
+		[MSG_MOTO_READ_GROUP_IO        ] = "Motoman Read Group IO",
+		[MSG_MOTO_READ_GROUP_IO_REPLY  ] = "Motoman Read Group IO Reply",
+		[MSG_MOTO_WRITE_GROUP_IO       ] = "Motoman Write Group IO",
+		[MSG_MOTO_WRITE_GROUP_IO_REPLY ] = "Motoman Write Group IO Reply",
+		[MSG_MOTO_READ_MREGISTER       ] = "Motoman Read M-register",
+		[MSG_MOTO_WRITE_MREGISTER      ] = "Motoman Write M-register",
 		[MSG_MOTO_JOINT_TRAJ_PT_FULL_EX] = "Motoman Joint Trajectory Point Full Extended",
 		[MSG_MOTO_JOINT_FEEDBACK_EX    ] = "Motoman Joint Feedback Extended",
+		[MSG_MOTO_SELECT_TOOL          ] = "Motoman Select Tool",
+		[MSG_MOTO_GET_DH_PARAMETERS    ] = "Motoman Get DH Parameters",
 		-- facilitate dissection of legacy captures (before renumbering of
 		-- Motoman msgs). See packet-simplemessage issue 12.
 		-- TODO: this will need to be removed once IDs 0x10 and 0x11 are
