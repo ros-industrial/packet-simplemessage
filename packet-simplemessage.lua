@@ -315,7 +315,7 @@ do
 	p_simplemsg_tcp.prefs["target_be"]              = Pref.bool("Target is big-endian"  , true, "Is the target using big-endian transfers?")
 	p_simplemsg_tcp.prefs["autodetect_endianness"]  = Pref.bool("Auto-detect endianness", true, "Should endianness of data be auto-detected?")
 	p_simplemsg_tcp.prefs["display_invalid_fields"] = Pref.bool("Show invalid fields"   , true, "Should values for invalid fields be displayed (in messages with a 'valid fields' field)?")
-	p_simplemsg_tcp.prefs["tcp_ports"             ] = Pref.range("TCP Ports", "11000,11002,50240,50241", "TCP ports the dissector should be registered for (default: 11000 (traj. relay), 11002 (state), 50240 (MotoROS traj. relay) and 50241 (MotorROS state)).", 65535)
+	p_simplemsg_tcp.prefs["tcp_ports"             ] = Pref.range("TCP Ports", "11000,11002,50240,50241,50242", "TCP ports the dissector should be registered for (default: 11000 (traj. relay), 11002 (state), 50240 (MotoROS traj. relay), 50241 (MotorROS state) and 50242 (MotorROS IO)).", 65535)
 
 
 
