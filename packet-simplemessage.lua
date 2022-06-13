@@ -1,6 +1,6 @@
 --[[
   Routines for ROS-Industrial SimpleMessage dissection
-  Copyright (c) 2013-2016, G.A. vd. Hoorn, TU Delft Robotics Institute
+  Copyright (c) 2013-2022, G.A. vd. Hoorn, TU Delft Robotics Institute
   All rights reserved.
 
   This program is free software; you can redistribute it and/or
@@ -60,8 +60,19 @@ do
 	local MSG_MOTO_READ_SINGLE_IO_REPLY  = 0x7D4
 	local MSG_MOTO_WRITE_SINGLE_IO       = 0x7D5
 	local MSG_MOTO_WRITE_SINGLE_IO_REPLY = 0x7D6
+	local MSG_MOTO_READ_GROUP_IO         = 0x7D7
+	local MSG_MOTO_READ_GROUP_IO_REPLY   = 0x7D8
+	local MSG_MOTO_WRITE_GROUP_IO        = 0x7D9
+	local MSG_MOTO_WRITE_GROUP_IO_REPLY  = 0x7DA
+
+	local MSG_MOTO_READ_MREGISTER        = 0x7DC
+	local MSG_MOTO_WRITE_MREGISTER       = 0x7DD
+
 	local MSG_MOTO_JOINT_TRAJ_PT_FULL_EX = 0x7E0
 	local MSG_MOTO_JOINT_FEEDBACK_EX     = 0x7E1
+	local MSG_MOTO_SELECT_TOOL           = 0x7E2
+
+	local MSG_MOTO_GET_DH_PARAMETERS     = 0x7E4
 
 	local COMM_INVALID                   = 0x00
 	local COMM_TOPIC                     = 0x01
@@ -97,11 +108,19 @@ do
 	local MOTO_MOTION_CTRL_CMD_UNDEFINED                      = 0
 	local MOTO_MOTION_CTRL_CMD_JOINT_TRAJ_PT_FULL             = MSG_JOINT_TRAJ_PT_FULL
 	local MOTO_MOTION_CTRL_CMD_JOINT_TRAJ_PT_FULL_EX          = MSG_MOTO_JOINT_TRAJ_PT_FULL_EX
+	local MOTO_MOTION_CTRL_CMD_MOTION_CTRL                    = MSG_MOTO_MOTION_CTRL
 	local MOTO_MOTION_CTRL_CMD_CHECK_MOTION_READY             = 200101
 	local MOTO_MOTION_CTRL_CMD_CHECK_QUEUE_CNT                = 200102
+
 	local MOTO_MOTION_CTRL_CMD_STOP_MOTION                    = 200111
+	local MOTO_MOTION_CTRL_CMD_START_SERVOS                   = 200112
+	local MOTO_MOTION_CTRL_CMD_STOP_SERVOS                    = 200113
+	local MOTO_MOTION_CTRL_CMD_RESET_ALARM                    = 200114
+
 	local MOTO_MOTION_CTRL_CMD_START_TRAJ_MODE                = 200121
 	local MOTO_MOTION_CTRL_CMD_STOP_TRAJ_MODE                 = 200122
+
+	local MOTO_MOTION_CTRL_CMD_DISCONNECT                     = 200130
 
 	local MOTO_MOTION_REPLY_RESULT_SUCCESS                    = 0
 	local MOTO_MOTION_REPLY_RESULT_TRUE                       = 0
@@ -126,6 +145,8 @@ do
 	local MOTO_MOTION_REPLY_SUBCODE_INVALID_DATA_SPEED        = 3013
 	local MOTO_MOTION_REPLY_SUBCODE_INVALID_DATA_ACCEL        = 3013
 	local MOTO_MOTION_REPLY_SUBCODE_INVALID_DATA_INSUFFICIENT = 3014
+	local MOTO_MOTION_REPLY_SUBCODE_INVALID_DATA_TIME         = 3015
+	local MOTO_MOTION_REPLY_SUBCODE_INVALID_DATA_TOOLNO       = 3016
 
 	local MOTO_MOTION_REPLY_NOTREADY_CODE_UNSPECIFIED         = 5000
 	local MOTO_MOTION_REPLY_NOTREADY_CODE_ALARM               = 5001
@@ -137,6 +158,9 @@ do
 	local MOTO_MOTION_REPLY_NOTREADY_CODE_HOLD                = 5007
 	local MOTO_MOTION_REPLY_NOTREADY_CODE_NOT_STARTED         = 5008
 	local MOTO_MOTION_REPLY_NOTREADY_CODE_WAITING_ROS         = 5009
+	local MOTO_MOTION_REPLY_NOTREADY_CODE_SKILLSEND           = 5010
+	local MOTO_MOTION_REPLY_NOTREADY_CODE_PFL_ACTIVE          = 5011
+	local MOTO_MOTION_REPLY_NOTREADY_CODE_INC_MOVE_ERROR      = 5012
 
 
 
@@ -200,8 +224,16 @@ do
 		[MSG_MOTO_READ_SINGLE_IO_REPLY ] = "Motoman Read Single IO Reply",
 		[MSG_MOTO_WRITE_SINGLE_IO      ] = "Motoman Write Single IO",
 		[MSG_MOTO_WRITE_SINGLE_IO_REPLY] = "Motoman Write Single IO Reply",
+		[MSG_MOTO_READ_GROUP_IO        ] = "Motoman Read Group IO",
+		[MSG_MOTO_READ_GROUP_IO_REPLY  ] = "Motoman Read Group IO Reply",
+		[MSG_MOTO_WRITE_GROUP_IO       ] = "Motoman Write Group IO",
+		[MSG_MOTO_WRITE_GROUP_IO_REPLY ] = "Motoman Write Group IO Reply",
+		[MSG_MOTO_READ_MREGISTER       ] = "Motoman Read M-register",
+		[MSG_MOTO_WRITE_MREGISTER      ] = "Motoman Write M-register",
 		[MSG_MOTO_JOINT_TRAJ_PT_FULL_EX] = "Motoman Joint Trajectory Point Full Extended",
 		[MSG_MOTO_JOINT_FEEDBACK_EX    ] = "Motoman Joint Feedback Extended",
+		[MSG_MOTO_SELECT_TOOL          ] = "Motoman Select Tool",
+		[MSG_MOTO_GET_DH_PARAMETERS    ] = "Motoman Get DH Parameters",
 		-- facilitate dissection of legacy captures (before renumbering of
 		-- Motoman msgs). See packet-simplemessage issue 12.
 		-- TODO: this will need to be removed once IDs 0x10 and 0x11 are
@@ -254,21 +286,28 @@ do
 		[MOTO_MOTION_CTRL_CMD_UNDEFINED            ] = "Undefined",
 		[MOTO_MOTION_CTRL_CMD_JOINT_TRAJ_PT_FULL   ] = "Joint_Traj_Pt_Full",
 		[MOTO_MOTION_CTRL_CMD_JOINT_TRAJ_PT_FULL_EX] = "Joint_Traj_Pt_Full_Ex",
+		[MOTO_MOTION_CTRL_CMD_MOTION_CTRL          ] = "Motion_Ctrl",
 		[MOTO_MOTION_CTRL_CMD_CHECK_MOTION_READY   ] = "Motion Ready",
 		[MOTO_MOTION_CTRL_CMD_CHECK_QUEUE_CNT      ] = "Check Queue Count",
 		[MOTO_MOTION_CTRL_CMD_STOP_MOTION          ] = "Stop Motion",
+		[MOTO_MOTION_CTRL_CMD_START_SERVOS         ] = "Start Servos",
+		[MOTO_MOTION_CTRL_CMD_STOP_SERVOS          ] = "Stop Servos",
+		[MOTO_MOTION_CTRL_CMD_RESET_ALARM          ] = "Reset Alarm",
+
 		[MOTO_MOTION_CTRL_CMD_START_TRAJ_MODE      ] = "Start Traj Mode",
-		[MOTO_MOTION_CTRL_CMD_STOP_TRAJ_MODE       ] = "Stop Traj Mode"
+		[MOTO_MOTION_CTRL_CMD_STOP_TRAJ_MODE       ] = "Stop Traj Mode",
+
+		[MOTO_MOTION_CTRL_CMD_DISCONNECT           ] = "Disconnect",
 	}
 
 	local motoman_reply_results_str = {
 		[MOTO_MOTION_REPLY_RESULT_SUCCESS   ] = "Success/True",
 		[MOTO_MOTION_REPLY_RESULT_BUSY      ] = "Busy",
 		[MOTO_MOTION_REPLY_RESULT_FAILURE   ] = "Failure/False",
-		[MOTO_MOTION_REPLY_RESULT_INVALID   ] = "Invalid",
-		[MOTO_MOTION_REPLY_RESULT_ALARM     ] = "Alarm",
+		[MOTO_MOTION_REPLY_RESULT_INVALID   ] = "Invalid Message",
+		[MOTO_MOTION_REPLY_RESULT_ALARM     ] = "Controller Alarm",
 		[MOTO_MOTION_REPLY_RESULT_NOT_READY ] = "Not Ready",
-		[MOTO_MOTION_REPLY_RESULT_MP_FAILURE] = "MP Failure"
+		[MOTO_MOTION_REPLY_RESULT_MP_FAILURE] = "MotoPlus Error"
 	}
 
 	local motoman_reply_subcodes_str = {
@@ -284,20 +323,25 @@ do
 		[MOTO_MOTION_REPLY_SUBCODE_INVALID_DATA_POSITION    ] = "Data Position",
 		[MOTO_MOTION_REPLY_SUBCODE_INVALID_DATA_SPEED       ] = "Data Speed",
 		[MOTO_MOTION_REPLY_SUBCODE_INVALID_DATA_ACCEL       ] = "Data Acceleration",
-		[MOTO_MOTION_REPLY_SUBCODE_INVALID_DATA_INSUFFICIENT] = "Data Insufficient"
+		[MOTO_MOTION_REPLY_SUBCODE_INVALID_DATA_INSUFFICIENT] = "Data Insufficient",
+		[MOTO_MOTION_REPLY_SUBCODE_INVALID_DATA_TIME        ] = "Data Time",
+		[MOTO_MOTION_REPLY_SUBCODE_INVALID_DATA_TOOLNO      ] = "Data Tool Number",
 	}
 
 	local motoman_not_read_code_str = {
-		[MOTO_MOTION_REPLY_NOTREADY_CODE_UNSPECIFIED] = "Unspecified",
-		[MOTO_MOTION_REPLY_NOTREADY_CODE_ALARM      ] = "Alarm",
-		[MOTO_MOTION_REPLY_NOTREADY_CODE_ERROR      ] = "Error",
-		[MOTO_MOTION_REPLY_NOTREADY_CODE_ESTOP      ] = "E-Stop",
-		[MOTO_MOTION_REPLY_NOTREADY_CODE_NOT_PLAY   ] = "Not Play",
-		[MOTO_MOTION_REPLY_NOTREADY_CODE_NOT_REMOTE ] = "Not Remote",
-		[MOTO_MOTION_REPLY_NOTREADY_CODE_SERVO_OFF  ] = "Servo Off",
-		[MOTO_MOTION_REPLY_NOTREADY_CODE_HOLD       ] = "Hold",
-		[MOTO_MOTION_REPLY_NOTREADY_CODE_NOT_STARTED] = "Not Started",
-		[MOTO_MOTION_REPLY_NOTREADY_CODE_WAITING_ROS] = "Waiting ROS"
+		[MOTO_MOTION_REPLY_NOTREADY_CODE_UNSPECIFIED   ] = "Unspecified",
+		[MOTO_MOTION_REPLY_NOTREADY_CODE_ALARM         ] = "Alarm",
+		[MOTO_MOTION_REPLY_NOTREADY_CODE_ERROR         ] = "Error",
+		[MOTO_MOTION_REPLY_NOTREADY_CODE_ESTOP         ] = "E-Stop",
+		[MOTO_MOTION_REPLY_NOTREADY_CODE_NOT_PLAY      ] = "Not Play",
+		[MOTO_MOTION_REPLY_NOTREADY_CODE_NOT_REMOTE    ] = "Not Remote",
+		[MOTO_MOTION_REPLY_NOTREADY_CODE_SERVO_OFF     ] = "Servo Off",
+		[MOTO_MOTION_REPLY_NOTREADY_CODE_HOLD          ] = "Hold",
+		[MOTO_MOTION_REPLY_NOTREADY_CODE_NOT_STARTED   ] = "Not Started",
+		[MOTO_MOTION_REPLY_NOTREADY_CODE_WAITING_ROS   ] = "Waiting ROS",
+		[MOTO_MOTION_REPLY_NOTREADY_CODE_SKILLSEND     ] = "Waiting on SkillSend",
+		[MOTO_MOTION_REPLY_NOTREADY_CODE_PFL_ACTIVE    ] = "PFL Activated",
+		[MOTO_MOTION_REPLY_NOTREADY_CODE_INC_MOVE_ERROR] = "Incremental Move Rejected",
 	}
 
 
